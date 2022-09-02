@@ -57,7 +57,7 @@ const RenderPosts = ({
               <PostTags post={post} />
               <PostTitle post={post} />
               <PostExcerpt post={post} />
-              <ReadMoreLink post={post} style={{display:'none'}} />
+              <ReadMoreLink post={post} styles={{display:'none'}} />
             </div>
           )
         })}
