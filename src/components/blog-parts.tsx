@@ -59,7 +59,7 @@ export const PostBody = ({ blocks }) => (
 )
 
 export const ReadMoreLink = ({ post }) => (
-  <div className={styles.readMoreLink}>
+  <div style={{display: 'none'}} className={styles.readMoreLink}>
     <Link href="/blog/[slug]" as={getBlogLink(post.Slug)} passHref>
       <a className={styles.readMore}>Read more</a>
     </Link>
