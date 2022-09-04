@@ -36,14 +36,11 @@ module.exports = {
   },
 
   outputFileTracing: false,
-
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.node = {
-        net: 'empty'
-      };
+  
+  resolve: {
+    fallback: {
+      net: false
     }
-
-    return config;
   },
+
 }
