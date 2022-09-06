@@ -1,11 +1,11 @@
 import DocumentHead from '../components/document-head'
 import styles from '../styles/page.module.css'
 
-import createDOMPurify from 'dompurify'
-import { JSDOM } from 'jsdom'
+// import createDOMPurify from 'dompurify'
+// import { JSDOM } from 'jsdom'
 
-const window = (new JSDOM('')).window
-const DOMPurify = createDOMPurify(window)
+// const window = (new JSDOM('')).window
+// const DOMPurify = createDOMPurify(window)
 
 
 
