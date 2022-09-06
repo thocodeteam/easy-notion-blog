@@ -33,7 +33,7 @@ const RenderPage = () => (
 
       <p>Ở đây để chia sẻ về những vấn đề thời sự nóng hổi trên cõi mạng mà những người dùng bàn phím để mưu sinh quan tâm.</p>
 
-      <p>Code gì nào cũng được, miễn có lương thiện là được!</p>
+      <p>Code gì cũng được, miễn có lương thiện là được!</p>
     </div>
   </div>
 )
