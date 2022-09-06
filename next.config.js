@@ -36,4 +36,11 @@ module.exports = {
   },
 
   outputFileTracing: false,
+  
+  resolve: {
+    fallback: {
+      net: false
+    }
+  },
+
 }

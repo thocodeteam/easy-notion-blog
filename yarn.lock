@@ -2508,6 +2508,11 @@
   dependencies:
     "domelementtype" "^2.3.0"
 
+"dompurify@^2.4.0":
+  "integrity" "sha512-Be9tbQMZds4a3C6xTmz68NlMfeONA//4dOavl/1rNw50E+/QO0KVpbcU0PcaW0nsQxurXls9ZocqFxk8R2mWEA=="
+  "resolved" "https://registry.npmjs.org/dompurify/-/dompurify-2.4.0.tgz"
+  "version" "2.4.0"
+
 "dompurify@2.3.8":
   "integrity" "sha512-eVhaWoVibIzqdGYjwsBWodIQIaXFSB+cKDf4cfxLMsK0xiud6SE+/WCVx/Xw/UwQsa4cS3T2eITcdtmTg2UKcw=="
   "resolved" "https://registry.npmjs.org/dompurify/-/dompurify-2.3.8.tgz"
