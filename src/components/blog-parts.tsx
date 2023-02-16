@@ -13,9 +13,9 @@ import {
 import styles from '../styles/blog-parts.module.css'
 
 export const PostDate = ({ post }) => (
-  <div className={styles.postDate}>
-    {post.Date ? getDateStr(post.Date) : ''}
-  </div>
+  // <div className={styles.postDate}>
+  //   {post.Date ? getDateStr(post.Date) : ''}
+  // </div>
 )
 
 export const PostTitle = ({ post, enableLink = true }) => {
@@ -59,7 +59,7 @@ export const PostBody = ({ blocks }) => (
 )
 
 export const ReadMoreLink = ({ post }) => (
-  <div style={{display: 'none'}} className={styles.readMoreLink}>
+  <div style={{ display: 'none' }} className={styles.readMoreLink}>
     <Link href="/blog/[slug]" as={getBlogLink(post.Slug)} passHref>
       <a className={styles.readMore}>Read more</a>
     </Link>
