@@ -154,12 +154,12 @@ const RenderPost = ({
 
       <div className={styles.subContent}>
         <BlogPostLink
-          heading="Posts in the same category"
+          heading="Nội dung cùng chuyên mục"
           posts={sameTagPosts}
         />
-        <BlogPostLink heading="Recommended" posts={rankedPosts} />
-        <BlogPostLink heading="Latest posts" posts={recentPosts} />
-        <BlogTagLink heading="Categories" tags={tags} />
+        <BlogPostLink heading="Tuyển chọn" posts={rankedPosts} />
+        <BlogPostLink heading="Bài mới" posts={recentPosts} />
+        <BlogTagLink heading="Danh mục" tags={tags} />
       </div>
     </div>
   )

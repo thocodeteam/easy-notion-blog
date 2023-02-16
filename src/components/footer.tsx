@@ -5,7 +5,7 @@ import styles from '../styles/footer.module.css'
 const Footer = () => (
   <footer className={styles.footer}>
     <div>
-      <ExtLink href="https://thocode.net">
+      <ExtLink href="https://thocode.com">
         Thợ Code
       </ExtLink>
       <span>. Powered by </span>
