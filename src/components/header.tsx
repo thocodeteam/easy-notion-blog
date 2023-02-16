@@ -13,9 +13,9 @@ const Header = () => {
   const { asPath } = useRouter()
 
   const navItems: NavItem[] = [
-    { label: 'Home', path: '/' },
-    { label: 'Blog', path: '/blog' },
-    { label: 'About', path: '/about' },
+    { label: 'Trang chủ', path: '/' },
+    { label: 'Tạp chí', path: '/blog' },
+    { label: 'Giới thiệu', path: '/about' },
   ]
 
   return (
