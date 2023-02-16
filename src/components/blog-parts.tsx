@@ -13,9 +13,9 @@ import {
 import styles from '../styles/blog-parts.module.css'
 
 export const PostDate = ({ post }) => (
-  // <div className={styles.postDate}>
-  //   {post.Date ? getDateStr(post.Date) : ''}
-  // </div>
+  <div className={styles.postDate} style={{ display: 'none' }}>
+    {post.Date ? getDateStr(post.Date) : ''}
+  </div>
 )
 
 export const PostTitle = ({ post, enableLink = true }) => {
