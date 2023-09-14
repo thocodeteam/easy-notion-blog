@@ -4,9 +4,9 @@ import styles from '../styles/footer.module.css'
 
 const Footer = () => (
   <footer className={styles.footer}>
-    <div>
+    <div>©
       <ExtLink href="https://thocode.com">
-        Thợ Code
+Tạp chí Thợ Code
       </ExtLink>
       <span>. Powered by </span>
       <ExtLink href="https://github.com/otoyo/easy-notion-blog">
