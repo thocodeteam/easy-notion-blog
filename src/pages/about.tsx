@@ -29,12 +29,12 @@ const RenderPage = () => (
 
     <div>
       <h2>ThoCode.com</h2>
+      <p>Liên hệ với chúng tôi: info@thocode.com.</p>
       <!--img src='/image.fe1500615beccc2187c31c43cd72dac3.png' alt='Drop us an email!' /-->
 
       <p>Ở đây để chia sẻ về những vấn đề thời sự nóng hổi trên cõi mạng mà những người dùng bàn phím để mưu sinh quan tâm.</p>
 
       <p>Code gì cũng được, miễn có lương thiện là được!</p>
-        <p>Liên hệ với chúng tôi: info@thocode.com.</p>
     </div>
   </div>
 )
