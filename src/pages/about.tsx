@@ -22,6 +22,7 @@ import styles from '../styles/page.module.css'
 //   </span><span class="token punctuation">}</span><span>
 //   </span></div></div></div><div style="position: absolute; top: 3px; right: 1px; color: rgba(55, 53, 47, 0.65); display: flex; align-items: center; justify-content: flex-end; height: 25px; font-size: 11.5px; opacity: 0; transition: opacity 300ms ease-in 0s;"></div><div style="position: absolute; top: 8px; left: 8px; color: rgba(55, 53, 47, 0.65); display: flex; align-items: center; justify-content: flex-end; opacity: 0; transition: opacity 300ms ease-in 0s;"><div class="notion-focusable" role="button" aria-disabled="true" tabindex="-1" style="user-select: none; transition: background 20ms ease-in 0s; display: inline-flex; align-items: center; white-space: nowrap; height: 20px; border-radius: 3px; font-size: 12px; line-height: 1.2; padding-left: 5px; padding-right: 5px; color: rgba(55, 53, 47, 0.65); margin-right: 5px;">C#<svg viewBox="0 0 30 30" class="chevronDown" style="width: 10px; height: 100%; display: block; fill: rgba(55, 53, 47, 0.35); flex-shrink: 0; backface-visibility: hidden; margin-left: 4px;"><polygon points="15,17.4 4.8,7 2,9.8 15,23 28,9.8 25.2,7 "></polygon></svg></div></div><div style="background: white; padding-right: 105px;"></div></div></div></div>
 // `;
+//       <!--img src='/image.fe1500615beccc2187c31c43cd72dac3.png' alt='Drop us an email!' /-->
 
 const RenderPage = () => (
   <div className={styles.container}>
@@ -30,7 +31,6 @@ const RenderPage = () => (
     <div>
       <h2>ThoCode.com</h2>
       <p>Liên hệ với chúng tôi: info@thocode.com.</p>
-      <!--img src='/image.fe1500615beccc2187c31c43cd72dac3.png' alt='Drop us an email!' /-->
 
       <p>Ở đây để chia sẻ về những vấn đề thời sự nóng hổi trên cõi mạng mà những người dùng bàn phím để mưu sinh quan tâm.</p>
 
