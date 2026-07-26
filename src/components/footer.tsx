@@ -44,9 +44,9 @@ const Footer = () => (
         </p>
         <p className={styles.brandDescription}>{SITE_DESCRIPTION}</p>
         <p className={styles.brandMotto}>
-          Lời quê góp nhặt dông dài
+          Lời quê chắp nhặt dông dài
           <br />
-          Mua vui cũng được một trống canh
+          Mua vui cũng được một vài trống canh
         </p>
       </div>
 
