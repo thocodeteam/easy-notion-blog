@@ -1,11 +1,118 @@
 .footer {
-  margin: 40px 0 10px;
-  text-align: center;
-  font-size: 0.75rem;
+  margin: 60px 0 20px;
+  padding-top: 24px;
+  border-top: 1px solid #e4e4e4;
+  font-size: 0.85rem;
 }
-.footer span {
+
+/* Khối trên: thương hiệu + các cột điều hướng */
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-double);
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.brand {
+  flex: 1 1 260px;
+  max-width: 380px;
+}
+.brandTitle {
+  margin: 0 0 var(--gap-half);
+  font-family: 'Spectral', serif;
+  font-size: 1.4rem;
+  line-height: 1.4;
+  color: #000;
+}
+.brandTitle a {
+  color: inherit;
+}
+.brandDescription {
+  margin: 0 0 var(--gap-half);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #555;
+}
+.brandMotto {
+  margin: 0;
+  font-family: 'Spectral', serif;
+  font-size: 0.8rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: #888;
+}
+
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-double);
+}
+.column {
+  min-width: 130px;
+}
+.columnTitle {
+  margin: 0 0 var(--gap-half);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #999;
+}
+.column ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.9rem;
+}
+.column ul li a {
+  color: #333;
+}
+.column ul li a:hover {
+  color: var(--accents-1);
+}
+
+/* Khối dưới: bản quyền + credit */
+.colophon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-half) var(--gap);
+  justify-content: space-between;
+  margin-top: var(--gap-double);
+  padding-top: var(--gap);
+  border-top: 1px solid #eee;
+  font-size: 0.75rem;
   color: #777;
 }
-.footer span a {
+.copyright,
+.credit {
+  margin: 0;
+}
+.colophon span {
+  color: #777;
+}
+.colophon a {
   color: inherit;
+  text-decoration: underline;
+  text-decoration-color: #ccc;
+}
+.colophon a:hover {
+  color: var(--accents-1);
+}
+
+@media (max-width: 600px) {
+  .footer {
+    margin: 40px 0 16px;
+    text-align: left;
+  }
+  .masthead {
+    gap: var(--gap-double);
+  }
+  .columns {
+    gap: var(--gap) var(--gap-double);
+  }
+  .colophon {
+    flex-direction: column;
+  }
 }
