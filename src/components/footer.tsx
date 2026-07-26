@@ -33,6 +33,13 @@ const socialLinks: FooterLink[] = [
   { label: 'Website', path: 'https://thocode.com' },
 ]
 
+// Tên tạp chí đã hiển thị ngay trên nên bỏ tiền tố "<tên> - " khỏi tagline,
+// vẫn giữ một nguồn duy nhất là SITE_DESCRIPTION.
+const tagline = SITE_DESCRIPTION.replace(
+  new RegExp('^' + SITE_TITLE + '\\s*-\\s*'),
+  ''
+)
+
 const Footer = () => (
   <footer className={styles.footer}>
     <div className={styles.masthead}>
@@ -42,7 +49,7 @@ const Footer = () => (
             <a>{SITE_TITLE}</a>
           </Link>
         </p>
-        <p className={styles.brandDescription}>{SITE_DESCRIPTION}</p>
+        <p className={styles.brandDescription}>{tagline}</p>
         <p className={styles.brandMotto}>
           Lời quê chắp nhặt dông dài
           <br />
@@ -104,9 +111,9 @@ const Footer = () => (
         <ExtLink href="https://github.com/otoyo/easy-notion-blog">
           easy-notion-blog
         </ExtLink>
-        <span> &amp; </span>
-        <ExtLink href="https://www.notion.so">Notion</ExtLink>
-        <span>.</span>
+        <span>. Built with </span>
+        <ExtLink href="https://kiro.dev">Kiro</ExtLink>
+        <span> and a lot of coffee in Saigon, with love ❤️</span>
       </div>
     </div>
   </footer>
