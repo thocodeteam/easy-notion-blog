@@ -86,18 +86,20 @@
   border-color: var(--accents-2);
   color: var(--accents-1);
 }
-.paginationCurrent span {
+.pagination li.paginationCurrent span {
   border-color: var(--fg);
   background: var(--fg);
   color: var(--bg);
   font-weight: 700;
 }
-.paginationGap {
+.pagination li.paginationGap {
   min-width: auto;
   padding: 0 0.25rem;
+  border: 0;
+  background: none;
   color: #999;
 }
-.paginationEdge a {
+.pagination li.paginationEdge a {
   padding: 0 0.9rem;
 }
 @media (max-width: 600px) {
