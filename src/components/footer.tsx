@@ -19,7 +19,14 @@ const siteLinks: FooterLink[] = [
 ]
 
 // Chuyên mục = tag trong Notion database. Sửa/thêm cho đúng tag của bạn.
-const categoryTags: string[] = ['Lập trình', 'Công nghệ', 'Chuyện nghề']
+const categoryTags: string[] = [
+  'AWS',
+  'DevOps',
+  'Nodejs',
+  'Reactjs',
+  'AI',
+  'Diary',
+]
 
 // Kênh bên ngoài. Chỉ để những link thật sự tồn tại.
 const socialLinks: FooterLink[] = [
