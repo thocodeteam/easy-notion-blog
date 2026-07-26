@@ -5,9 +5,9 @@ import RenderPosts from '../../../src/pages/blog/index'
 
 import {
   getPosts,
-  getFirstPost,
   getRankedPosts,
   getAllTags,
+  getNumberOfPages,
 } from '../../../src/lib/notion/client'
 
 jest.mock('next/router', () => ({
@@ -22,16 +22,16 @@ jest.mock('next/router', () => ({
 describe('RenderPosts', () => {
   it('renders the page unchanged', async () => {
     const posts = await getPosts()
-    const firstPost = await getFirstPost()
     const rankedPosts = await getRankedPosts()
     const tags = await getAllTags()
+    const numberOfPages = await getNumberOfPages()
 
     const { container } = render(
       <RenderPosts
         posts={posts}
-        firstPost={firstPost}
         rankedPosts={rankedPosts}
         tags={tags}
+        numberOfPages={numberOfPages}
       />
     )
     expect(container).toMatchSnapshot()

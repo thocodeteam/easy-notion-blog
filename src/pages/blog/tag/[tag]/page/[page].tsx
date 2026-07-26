@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
-import { NUMBER_OF_POSTS_PER_PAGE } from '../../../../../lib/notion/server-constants'
 import DocumentHead from '../../../../../components/document-head'
 import {
   BlogPostLink,
@@ -16,25 +15,25 @@ import {
   ReadMoreLink,
 } from '../../../../../components/blog-parts'
 import styles from '../../../../../styles/blog.module.css'
-
 import {
   getPosts,
   getRankedPosts,
-  getPostsByTagBefore,
-  getAllTags,
+  getPostsByTagAndPage,
   getNumberOfPagesByTag,
-  getPageNumberByTagAndBeforeDate,
+  getAllTags,
 } from '../../../../../lib/notion/client'
 
-export async function getStaticProps({ params: { tag, date } }) {
-  if (!Date.parse(date) || !/\d{4}-\d{2}-\d{2}/.test(date)) {
+export async function getStaticProps({ params: { tag, page: requestedPage } }) {
+  const page = parseInt(requestedPage as string, 10)
+
+  if (isNaN(page) || page < 1) {
     return { notFound: true }
   }
 
-  const posts = await getPostsByTagBefore(tag, date, NUMBER_OF_POSTS_PER_PAGE)
+  const posts = await getPostsByTagAndPage(tag, page)
 
   if (posts.length === 0) {
-    console.log(`Failed to find posts for tag: ${tag}`)
+    console.log(`Failed to find posts for tag: ${tag}, page: ${page}`)
     return {
       props: {
         redirect: '/blog',
@@ -43,46 +42,43 @@ export async function getStaticProps({ params: { tag, date } }) {
     }
   }
 
-  const [rankedPosts, recentPosts, tags, numberOfPages, currentPage] =
-    await Promise.all([
-      getRankedPosts(),
-      getPosts(5),
-      getAllTags(),
-      getNumberOfPagesByTag(tag),
-      getPageNumberByTagAndBeforeDate(tag, date),
-    ])
+  const [rankedPosts, recentPosts, tags, numberOfPages] = await Promise.all([
+    getRankedPosts(),
+    getPosts(5),
+    getAllTags(),
+    getNumberOfPagesByTag(tag),
+  ])
 
   return {
     props: {
-      date,
+      page,
       posts,
       rankedPosts,
       recentPosts,
       tags,
       tag,
       numberOfPages,
-      currentPage,
     },
-    revalidate: 3600,
+    revalidate: 60,
   }
 }
 
 export async function getStaticPaths() {
+  // Số trang mỗi tag thay đổi theo nội dung Notion nên để fallback tự sinh
   return {
     paths: [],
     fallback: 'blocking',
   }
 }
 
-const RenderPostsByTagBeforeDate = ({
-  date,
+const RenderPostsByTagAndPage = ({
+  tag,
+  page,
   posts = [],
   rankedPosts = [],
   recentPosts = [],
   tags = [],
-  tag,
   numberOfPages = 1,
-  currentPage = 1,
   redirect,
 }) => {
   const router = useRouter()
@@ -99,7 +95,7 @@ const RenderPostsByTagBeforeDate = ({
 
   return (
     <div className={styles.container}>
-      <DocumentHead description={`Posts in ${tag} before ${date}`} />
+      <DocumentHead description={`Posts in ${tag}, page ${page}`} />
 
       <div className={styles.mainContent}>
         <header>
@@ -123,7 +119,7 @@ const RenderPostsByTagBeforeDate = ({
         <footer>
           <Pagination
             numberOfPages={numberOfPages}
-            currentPage={currentPage}
+            currentPage={page}
             tag={tag}
           />
         </footer>
@@ -138,4 +134,4 @@ const RenderPostsByTagBeforeDate = ({
   )
 }
 
-export default RenderPostsByTagBeforeDate
+export default RenderPostsByTagAndPage

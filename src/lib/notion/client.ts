@@ -1,4 +1,8 @@
-import { NOTION_API_SECRET, DATABASE_ID } from './server-constants'
+import {
+  NOTION_API_SECRET,
+  DATABASE_ID,
+  NUMBER_OF_POSTS_PER_PAGE,
+} from './server-constants'
 import {
   Post,
   Block,
@@ -169,6 +173,62 @@ export async function getPostsBefore(date: string, pageSize = 10) {
   return data.results
     .filter(item => _validPost(item))
     .map(item => _buildPost(item))
+}
+
+export async function getNumberOfPages() {
+  const allPosts = await getAllPosts()
+  return Math.ceil(allPosts.length / NUMBER_OF_POSTS_PER_PAGE)
+}
+
+export async function getPostsByPage(page: number) {
+  if (page < 1) return []
+
+  const allPosts = await getAllPosts()
+  const startIndex = (page - 1) * NUMBER_OF_POSTS_PER_PAGE
+
+  return allPosts.slice(startIndex, startIndex + NUMBER_OF_POSTS_PER_PAGE)
+}
+
+export async function getNumberOfPagesByTag(tag: string) {
+  if (!tag) return 0
+
+  const allPosts = await getAllPosts()
+  const taggedPosts = allPosts.filter(post => post.Tags.includes(tag))
+
+  return Math.ceil(taggedPosts.length / NUMBER_OF_POSTS_PER_PAGE)
+}
+
+export async function getPostsByTagAndPage(tag: string, page: number) {
+  if (!tag || page < 1) return []
+
+  const allPosts = await getAllPosts()
+  const taggedPosts = allPosts.filter(post => post.Tags.includes(tag))
+  const startIndex = (page - 1) * NUMBER_OF_POSTS_PER_PAGE
+
+  return taggedPosts.slice(startIndex, startIndex + NUMBER_OF_POSTS_PER_PAGE)
+}
+
+// Các URL cũ dạng /blog/before/<date> vẫn phải hiển thị đúng số trang hiện tại,
+// nên quy đổi mốc ngày thành số trang: đếm số bài mới hơn hoặc bằng mốc đó.
+export async function getPageNumberByBeforeDate(date: string) {
+  const allPosts = await getAllPosts()
+  const newerPosts = allPosts.filter(post => post.Date >= date)
+
+  return Math.floor(newerPosts.length / NUMBER_OF_POSTS_PER_PAGE) + 1
+}
+
+export async function getPageNumberByTagAndBeforeDate(
+  tag: string,
+  date: string
+) {
+  if (!tag) return 1
+
+  const allPosts = await getAllPosts()
+  const newerPosts = allPosts.filter(
+    post => post.Tags.includes(tag) && post.Date >= date
+  )
+
+  return Math.floor(newerPosts.length / NUMBER_OF_POSTS_PER_PAGE) + 1
 }
 
 export async function getFirstPost() {

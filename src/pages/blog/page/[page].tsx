@@ -1,4 +1,4 @@
-import DocumentHead from '../../components/document-head'
+import DocumentHead from '../../../components/document-head'
 import {
   BlogPostLink,
   BlogTagLink,
@@ -9,25 +9,36 @@ import {
   PostTags,
   PostTitle,
   ReadMoreLink,
-} from '../../components/blog-parts'
-import styles from '../../styles/blog.module.css'
+} from '../../../components/blog-parts'
+import styles from '../../../styles/blog.module.css'
 import {
-  getPosts,
+  getPostsByPage,
   getRankedPosts,
   getAllTags,
   getNumberOfPages,
-} from '../../lib/notion/client'
+} from '../../../lib/notion/client'
 
-export async function getStaticProps() {
+export async function getStaticProps({ params: { page: requestedPage } }) {
+  const page = parseInt(requestedPage as string, 10)
+
+  if (isNaN(page) || page < 1) {
+    return { notFound: true }
+  }
+
   const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
-    getPosts(),
+    getPostsByPage(page),
     getRankedPosts(),
     getAllTags(),
     getNumberOfPages(),
   ])
 
+  if (posts.length === 0) {
+    return { notFound: true, revalidate: 60 }
+  }
+
   return {
     props: {
+      page,
       posts,
       rankedPosts,
       tags,
@@ -37,7 +48,23 @@ export async function getStaticProps() {
   }
 }
 
-const RenderPosts = ({
+export async function getStaticPaths() {
+  const numberOfPages = await getNumberOfPages()
+
+  // Trang 1 đã là /blog nên chỉ sinh sẵn từ trang 2
+  const paths = []
+  for (let page = 2; page <= numberOfPages; page++) {
+    paths.push({ params: { page: page.toString() } })
+  }
+
+  return {
+    paths,
+    fallback: 'blocking',
+  }
+}
+
+const RenderPostsByPage = ({
+  page,
   posts = [],
   rankedPosts = [],
   tags = [],
@@ -45,7 +72,7 @@ const RenderPosts = ({
 }) => {
   return (
     <div className={styles.container}>
-      <DocumentHead title="Blog" />
+      <DocumentHead title={`Trang ${page}`} />
 
       <div className={styles.mainContent}>
         <NoContents contents={posts} />
@@ -63,7 +90,7 @@ const RenderPosts = ({
         })}
 
         <footer>
-          <Pagination numberOfPages={numberOfPages} currentPage={1} />
+          <Pagination numberOfPages={numberOfPages} currentPage={page} />
         </footer>
       </div>
 
@@ -75,4 +102,4 @@ const RenderPosts = ({
   )
 }
 
-export default RenderPosts
+export default RenderPostsByPage

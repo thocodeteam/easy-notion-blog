@@ -13,6 +13,7 @@ exports[`RenderPosts renders the page unchanged 1`] = `
       >
         <div
           class="postDate"
+          style="display: none;"
         >
           2021-11-06
         </div>
@@ -43,6 +44,7 @@ exports[`RenderPosts renders the page unchanged 1`] = `
         </div>
         <div
           class="readMoreLink"
+          style="display: none;"
         >
           <a
             class="readMore"
@@ -57,6 +59,7 @@ exports[`RenderPosts renders the page unchanged 1`] = `
       >
         <div
           class="postDate"
+          style="display: none;"
         >
           2021-11-03
         </div>
@@ -87,6 +90,7 @@ exports[`RenderPosts renders the page unchanged 1`] = `
         </div>
         <div
           class="readMoreLink"
+          style="display: none;"
         >
           <a
             class="readMore"
@@ -101,6 +105,7 @@ exports[`RenderPosts renders the page unchanged 1`] = `
       >
         <div
           class="postDate"
+          style="display: none;"
         >
           2021-11-01
         </div>
@@ -131,6 +136,7 @@ exports[`RenderPosts renders the page unchanged 1`] = `
         </div>
         <div
           class="readMoreLink"
+          style="display: none;"
         >
           <a
             class="readMore"
@@ -140,17 +146,7 @@ exports[`RenderPosts renders the page unchanged 1`] = `
           </a>
         </div>
       </div>
-      <footer>
-        <div
-          class="nextPageLink"
-        >
-          <a
-            href="/blog/before/2021-11-01"
-          >
-            Next page ＞
-          </a>
-        </div>
-      </footer>
+      <footer />
     </div>
     <div
       class="subContent"
@@ -159,7 +155,7 @@ exports[`RenderPosts renders the page unchanged 1`] = `
         class="blogPostLink"
       >
         <h3>
-          Recommended
+          Tuyển chọn
         </h3>
         <ul>
           <li>
@@ -189,7 +185,7 @@ exports[`RenderPosts renders the page unchanged 1`] = `
         class="blogTagLink"
       >
         <h3>
-          Categories
+          Danh mục
         </h3>
         <ul>
           <li>

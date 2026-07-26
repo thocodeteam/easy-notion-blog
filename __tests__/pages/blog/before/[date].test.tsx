@@ -5,11 +5,11 @@ import RenderPostsBeforeDate from '../../../../src/pages/blog/before/[date]'
 
 import { NUMBER_OF_POSTS_PER_PAGE } from '../../../../src/lib/notion/server-constants'
 import {
-  getPosts,
   getRankedPosts,
   getPostsBefore,
-  getFirstPost,
   getAllTags,
+  getNumberOfPages,
+  getPageNumberByBeforeDate,
 } from '../../../../src/lib/notion/client'
 
 const date = '2022-01-01'
@@ -26,17 +26,19 @@ jest.mock('next/router', () => ({
 describe('RenderPostsBeforeDate', () => {
   it('renders the page unchanged', async () => {
     const posts = await getPostsBefore(date, NUMBER_OF_POSTS_PER_PAGE)
-    const firstPost = await getFirstPost()
     const rankedPosts = await getRankedPosts()
     const tags = await getAllTags()
+    const numberOfPages = await getNumberOfPages()
+    const currentPage = await getPageNumberByBeforeDate(date)
 
     const { container } = render(
       <RenderPostsBeforeDate
         date={date}
         posts={posts}
-        firstPost={firstPost}
         rankedPosts={rankedPosts}
         tags={tags}
+        numberOfPages={numberOfPages}
+        currentPage={currentPage}
         redirect={null}
       />
     )

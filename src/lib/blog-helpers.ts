@@ -10,6 +10,17 @@ export const getBeforeLink = (date: string) => {
   return `/blog/before/${date}`
 }
 
+export const getPageLink = (page: number) => {
+  return page === 1 ? '/blog' : `/blog/page/${page}`
+}
+
+export const getTagPageLink = (tag: string, page: number) => {
+  const encodedTag = encodeURIComponent(tag)
+  return page === 1
+    ? `/blog/tag/${encodedTag}`
+    : `/blog/tag/${encodedTag}/page/${page}`
+}
+
 export const getTagBeforeLink = (tag: string, date: string) => {
   return `/blog/tag/${encodeURIComponent(tag)}/before/${date}`
 }

@@ -6,9 +6,10 @@ import RenderPostsByTagsBeforeDate from '../../../../../../src/pages/blog/tag/[t
 import {
   getPosts,
   getPostsByTagBefore,
-  getFirstPostByTag,
   getRankedPosts,
   getAllTags,
+  getNumberOfPagesByTag,
+  getPageNumberByTagAndBeforeDate,
 } from '../../../../../../src/lib/notion/client'
 
 jest.mock('next/router', () => ({
@@ -25,20 +26,22 @@ describe('RenderPostsByTagsBeforeDate', () => {
     const tag = 'Diary'
     const date = '2022-05-01'
     const posts = await getPostsByTagBefore(tag, date)
-    const firstPost = await getFirstPostByTag(tag)
     const rankedPosts = await getRankedPosts()
     const recentPosts = await getPosts(5)
     const tags = await getAllTags()
+    const numberOfPages = await getNumberOfPagesByTag(tag)
+    const currentPage = await getPageNumberByTagAndBeforeDate(tag, date)
 
     const { container } = render(
       <RenderPostsByTagsBeforeDate
         date={date}
         tag={tag}
         posts={posts}
-        firstPost={firstPost}
         rankedPosts={rankedPosts}
         recentPosts={recentPosts}
         tags={tags}
+        numberOfPages={numberOfPages}
+        currentPage={currentPage}
         redirect={null}
       />
     )

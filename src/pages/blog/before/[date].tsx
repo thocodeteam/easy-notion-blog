@@ -6,8 +6,8 @@ import DocumentHead from '../../../components/document-head'
 import {
   BlogPostLink,
   BlogTagLink,
-  NextPageLink,
   NoContents,
+  Pagination,
   PostDate,
   PostExcerpt,
   PostTags,
@@ -22,8 +22,9 @@ import {
   getPosts,
   getRankedPosts,
   getPostsBefore,
-  getFirstPost,
   getAllTags,
+  getNumberOfPages,
+  getPageNumberByBeforeDate,
 } from '../../../lib/notion/client'
 
 export async function getStaticProps({ params: { date } }) {
@@ -31,20 +32,23 @@ export async function getStaticProps({ params: { date } }) {
     return { notFound: true }
   }
 
-  const [posts, firstPost, rankedPosts, tags] = await Promise.all([
-    getPostsBefore(date, NUMBER_OF_POSTS_PER_PAGE),
-    getFirstPost(),
-    getRankedPosts(),
-    getAllTags(),
-  ])
+  const [posts, rankedPosts, tags, numberOfPages, currentPage] =
+    await Promise.all([
+      getPostsBefore(date, NUMBER_OF_POSTS_PER_PAGE),
+      getRankedPosts(),
+      getAllTags(),
+      getNumberOfPages(),
+      getPageNumberByBeforeDate(date),
+    ])
 
   return {
     props: {
       date,
       posts,
-      firstPost,
       rankedPosts,
       tags,
+      numberOfPages,
+      currentPage,
     },
     revalidate: 3600,
   }
@@ -63,9 +67,10 @@ export async function getStaticPaths() {
 const RenderPostsBeforeDate = ({
   date,
   posts = [],
-  firstPost,
   rankedPosts = [],
   tags = [],
+  numberOfPages = 1,
+  currentPage = 1,
   redirect,
 }) => {
   const router = useRouter()
@@ -104,13 +109,16 @@ const RenderPostsBeforeDate = ({
         })}
 
         <footer>
-          <NextPageLink firstPost={firstPost} posts={posts} />
+          <Pagination
+            numberOfPages={numberOfPages}
+            currentPage={currentPage}
+          />
         </footer>
       </div>
 
       <div className={styles.subContent}>
-        <BlogPostLink heading="Recommended" posts={rankedPosts} />
-        <BlogTagLink heading="Categories" tags={tags} />
+        <BlogPostLink heading="Tuyển chọn" posts={rankedPosts} />
+        <BlogTagLink heading="Danh mục" tags={tags} />
       </div>
     </div>
   )

@@ -1,12 +1,11 @@
 import { useRouter } from 'next/router'
 
-import { NUMBER_OF_POSTS_PER_PAGE } from '../../../lib/notion/server-constants'
 import DocumentHead from '../../../components/document-head'
 import {
   BlogPostLink,
   BlogTagLink,
-  NextPageLink,
   NoContents,
+  Pagination,
   PostDate,
   PostExcerpt,
   PostTags,
@@ -20,13 +19,13 @@ import { useEffect } from 'react'
 import {
   getPosts,
   getRankedPosts,
-  getPostsByTag,
-  getFirstPostByTag,
+  getPostsByTagAndPage,
+  getNumberOfPagesByTag,
   getAllTags,
 } from '../../../lib/notion/client'
 
 export async function getStaticProps({ params: { tag } }) {
-  const posts = await getPostsByTag(tag, NUMBER_OF_POSTS_PER_PAGE)
+  const posts = await getPostsByTagAndPage(tag, 1)
 
   if (posts.length === 0) {
     console.log(`Failed to find posts for tag: ${tag}`)
@@ -38,21 +37,21 @@ export async function getStaticProps({ params: { tag } }) {
     }
   }
 
-  const [firstPost, rankedPosts, recentPosts, tags] = await Promise.all([
-    getFirstPostByTag(tag),
+  const [rankedPosts, recentPosts, tags, numberOfPages] = await Promise.all([
     getRankedPosts(),
     getPosts(5),
     getAllTags(),
+    getNumberOfPagesByTag(tag),
   ])
 
   return {
     props: {
       posts,
-      firstPost,
       rankedPosts,
       recentPosts,
       tags,
       tag,
+      numberOfPages,
     },
     revalidate: 60,
   }
@@ -70,10 +69,10 @@ export async function getStaticPaths() {
 const RenderPostsByTags = ({
   tag,
   posts = [],
-  firstPost,
   rankedPosts = [],
   recentPosts = [],
   tags = [],
+  numberOfPages = 1,
   redirect,
 }) => {
   const router = useRouter()
@@ -112,14 +111,18 @@ const RenderPostsByTags = ({
         })}
 
         <footer>
-          <NextPageLink firstPost={firstPost} posts={posts} tag={tag} />
+          <Pagination
+            numberOfPages={numberOfPages}
+            currentPage={1}
+            tag={tag}
+          />
         </footer>
       </div>
 
       <div className={styles.subContent}>
-        <BlogPostLink heading="Recommended" posts={rankedPosts} />
-        <BlogPostLink heading="Latest Posts" posts={recentPosts} />
-        <BlogTagLink heading="Categories" tags={tags} />
+        <BlogPostLink heading="Tuyển chọn" posts={rankedPosts} />
+        <BlogPostLink heading="Bài mới" posts={recentPosts} />
+        <BlogTagLink heading="Danh mục" tags={tags} />
       </div>
     </div>
   )
