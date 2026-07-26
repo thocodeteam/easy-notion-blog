@@ -31,7 +31,6 @@ const categoryTags: string[] = [
 // Kênh bên ngoài. Chỉ để những link thật sự tồn tại.
 const socialLinks: FooterLink[] = [
   { label: 'Website', path: 'https://thocode.com' },
-  { label: 'GitHub', path: 'https://github.com/thocodeteam' },
 ]
 
 const Footer = () => (
