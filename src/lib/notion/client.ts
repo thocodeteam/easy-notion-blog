@@ -761,14 +761,13 @@ function _buildPost(data) {
 
   const post: Post = {
     PageId: data.id,
-    Title: prop.Page.title[0].plain_text,
+    Title: prop.Page.title.map(rt => rt.plain_text).join(''),
     Slug: prop.Slug.rich_text[0].plain_text,
     Date: prop.Date.date.start,
     Tags: prop.Tags.multi_select.map(opt => opt.name),
-    Excerpt:
-      prop.Excerpt.rich_text.length > 0
-        ? prop.Excerpt.rich_text[0].plain_text
-        : '',
+    // Notion splits rich text into segments at every formatting change
+    // (bold, italic, link...), so join all of them instead of taking the first.
+    Excerpt: prop.Excerpt.rich_text.map(rt => rt.plain_text).join(''),
     OGImage:
       prop.OGImage.files.length > 0 ? prop.OGImage.files[0].file.url : null,
     Rank: prop.Rank.number,
