@@ -31,4 +31,3 @@ Các query Notion dùng `sorts: [{ property: 'Date', timestamp: 'created_time', 
 - `src/lib/notion/image-cache.ts` không được import ở đâu.
 - `README.ja.md` là README tiếng Nhật của upstream.
 - Thông báo lỗi trong `scripts/init-database.sh` và `PostsNotFound` vẫn là tiếng Nhật/tiếng Anh.
-- Nút chia sẻ có Hatena (mạng xã hội Nhật) và Pocket (Mozilla đã đóng cửa 07/2025); có thể thay bằng nút phù hợp người đọc Việt.

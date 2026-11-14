@@ -1,10 +1,6 @@
 import {
   FacebookIcon,
   FacebookShareButton,
-  HatenaIcon,
-  HatenaShareButton,
-  PocketIcon,
-  PocketShareButton,
   TwitterIcon,
   TwitterShareButton,
 } from 'react-share'
@@ -12,23 +8,10 @@ import {
 import * as gtag from '../lib/gtag'
 import styles from '../styles/social-buttons.module.css'
 
+// Chỉ giữ mạng xã hội người đọc Việt dùng. Pocket (Mozilla đóng cửa 07/2025)
+// và Hatena (mạng bookmark Nhật, kế thừa từ upstream) đã bỏ.
 const SocialButtons = ({ title = '', url, id = null }) => (
   <ul className={styles.socialButtons}>
-    <li>
-      <TwitterShareButton
-        url={url}
-        title={title}
-        beforeOnClick={() =>
-          gtag.share({
-            method: 'twitter',
-            contentType: 'article',
-            itemId: id,
-          })
-        }
-      >
-        <TwitterIcon size={32} round={true} />
-      </TwitterShareButton>
-    </li>
     <li>
       <FacebookShareButton
         url={url}
@@ -44,34 +27,19 @@ const SocialButtons = ({ title = '', url, id = null }) => (
       </FacebookShareButton>
     </li>
     <li>
-      <PocketShareButton
+      <TwitterShareButton
         url={url}
         title={title}
         beforeOnClick={() =>
           gtag.share({
-            method: 'pocket',
+            method: 'twitter',
             contentType: 'article',
             itemId: id,
           })
         }
       >
-        <PocketIcon size={32} round={true} />
-      </PocketShareButton>
-    </li>
-    <li>
-      <HatenaShareButton
-        url={url}
-        title={title}
-        beforeOnClick={() =>
-          gtag.share({
-            method: 'hatena',
-            contentType: 'article',
-            itemId: id,
-          })
-        }
-      >
-        <HatenaIcon size={32} round={true} />
-      </HatenaShareButton>
+        <TwitterIcon size={32} round={true} />
+      </TwitterShareButton>
     </li>
   </ul>
 )

@@ -116,7 +116,7 @@ Chỉ ảnh ở cấp cao nhất được kiểm tra (xem TODO trong code).
 | `components/blog-parts.tsx` | Mảnh UI trang danh sách và sidebar: `PostTitle`, `PostTags`, `PostExcerpt`, `PostBody`, `Pagination`, `BlogPostLink`, `BlogTagLink`, `NoContents`... `PostDate` và `ReadMoreLink` đang bị ẩn bằng `display: none`. |
 | `components/notion-block.tsx` | Render mảng `Block` thành React. Gom list item liền nhau thành `<ul>`/`<ol>`. |
 | `components/notion-blocks/*` | Block nặng, tải bằng `next/dynamic`: code (Prism, Mermaid), embed (Twitter, Gist), bookmark, video (YouTube), công thức (KaTeX). |
-| `components/social-buttons.tsx` | Nút chia sẻ Twitter, Facebook, Pocket, Hatena; gửi sự kiện `share` lên GA4. Chỉ hiện khi có `NEXT_PUBLIC_URL`. |
+| `components/social-buttons.tsx` | Nút chia sẻ Facebook và Twitter/X; gửi sự kiện `share` lên GA4. Chỉ hiện khi có `NEXT_PUBLIC_URL`. |
 | `components/google-analytics.tsx`, `lib/gtag.js` | Nạp gtag.js khi có `NEXT_PUBLIC_GA_TRACKING_ID`. |
 
 Sidebar dùng các tiêu đề tiếng Việt: "Tuyển chọn" (bài có `Rank`, giảm dần), "Bài mới" (5 bài mới nhất), "Danh mục" (tất cả tag), "Nội dung cùng chuyên mục" (bài cùng tag đầu tiên, trừ bài hiện tại).
