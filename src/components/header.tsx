@@ -14,7 +14,7 @@ const Header = () => {
 
   const navItems: NavItem[] = [
     { label: 'Trang chủ', path: '/' },
-    { label: 'Tạp chí', path: '/blog' },
+    { label: 'Lưu trữ', path: '/blog' },
     { label: 'Giới thiệu', path: '/about' },
   ]
 
