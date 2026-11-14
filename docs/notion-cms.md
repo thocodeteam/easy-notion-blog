@@ -13,7 +13,7 @@ Tên property phải đúng chính tả và kiểu, vì code truy cập trực t
 | Property | Kiểu Notion | Bắt buộc | Dùng làm |
 |---|---|---|---|
 | `Page` | Title | có | Tiêu đề bài |
-| `Slug` | Text | có | Đuôi URL `/blog/<slug>`. Chỉ dùng ký tự hợp lệ cho URL, không trùng giữa các bài. |
+| `Slug` | Text | không | Đuôi URL `/blog/<slug>`. Để trống thì site tự sinh từ tiêu đề, xem [Slug tự sinh](#slug-tự-sinh). Gõ tay thì chỉ dùng ký tự hợp lệ cho URL, không trùng giữa các bài. |
 | `Date` | Date | có | Ngày xuất bản. Bài có ngày trong tương lai bị ẩn cho tới ngày đó. |
 | `Tags` | Multi-select | không | Chuyên mục. Tag đầu tiên quyết định khối "Nội dung cùng chuyên mục". |
 | `Excerpt` | Text | không | Đoạn tóm tắt trên trang danh sách và meta description |
@@ -30,9 +30,36 @@ Tên property phải đúng chính tả và kiểu, vì code truy cập trực t
 1. `Published` được tick.
 2. `Date` <= thời điểm hiện tại.
 
-Ngoài ra `_validPost` loại mọi bài có `Page` rỗng, `Slug` rỗng hoặc không có `Date`, ở mọi môi trường.
+Ngoài ra `_validPost` loại mọi bài có `Page` rỗng hoặc không có `Date`, ở mọi môi trường. `Slug` rỗng không còn làm mất bài: slug được sinh tự động.
 
 Ở `npm run dev`, điều kiện 1 và 2 bị bỏ nên bài nháp vẫn hiện.
+
+## Slug tự sinh
+
+Bài đã qua hai điều kiện trên mà ô `Slug` trống thì site sinh slug từ `Page` rồi ghi ngược vào ô `Slug` của bài trong Notion. Từ đó slug cố định: sửa tiêu đề sau này không đổi URL. Muốn URL khác thì gõ tay vào ô `Slug`; slug gõ tay luôn thắng và không bao giờ bị ghi đè. Code ở `src/lib/notion/slug.js`.
+
+Quy tắc sinh:
+
+- Chữ thường, bỏ dấu tiếng Việt (Unicode NFD rồi xoá dấu kết hợp), `đ`/`Đ` thành `d` (không phải `dj`).
+- `&` thành `and`, cùng kiểu với slug gõ tay trước đây (`hoc-and-thi-...`).
+- Mọi chuỗi ký tự ngoài `a-z0-9` thành một dấu `-`, bỏ `-` ở hai đầu.
+- Tối đa 200 ký tự, cắt ở ranh giới từ. Next lưu mỗi trang ISR thành file `<slug>.html`/`<slug>.json`, và Linux giới hạn tên file 255 byte.
+- Tiêu đề không còn ký tự nào dùng được (chỉ emoji, ký hiệu) thì dùng page id.
+- Trùng với slug đã có trong database, kể cả bản nháp, thì thêm `-2`, `-3`... Bài cũ hơn (theo `Date`) nhận số nhỏ hơn.
+
+Ví dụ: "Kiro Approve for Me: Khi AI Agent tự quyết định hành động nào được phép chạy, hành động nào cần hỏi Developer" → `kiro-approve-for-me-khi-ai-agent-tu-quyet-dinh-hanh-dong-nao-duoc-phep-chay-hanh-dong-nao-can-hoi-developer`.
+
+Slug cũ (kể cả slug có `dj` do công cụ ngoài sinh) giữ nguyên, vì đổi là gãy link.
+
+Khi nào ghi vào Notion:
+
+- Lúc `npm run build` (bước tạo `.blog_index_data`) và lúc ISR tái tạo trang ở production.
+- **Không** ghi ở Vercel Preview (`VERCEL_ENV=preview`, dùng chung database với production) và ở `npm run dev` (bản nháp lọt qua filter). Ở đó slug chỉ sinh trong bộ nhớ, giống hệt slug production sẽ ghi.
+- Trước khi ghi, code đọc lại trang; nếu ô `Slug` vừa được gõ tay thì dùng slug đó.
+
+Ghi cần integration có quyền **Update content** (Notion → *Settings* → *Connections* → *Develop or manage integrations* → integration → *Capabilities*). Thiếu quyền thì Notion trả lỗi `restricted_resource`; site log cảnh báo và vẫn hiển thị bài bằng slug sinh trong bộ nhớ, nhưng slug chưa cố định: sửa tiêu đề lúc đó sẽ đổi URL. Mỗi process chỉ thử ghi một lần.
+
+Chi phí request Notion: chỉ khi có bài thiếu slug mới tốn thêm 1 lượt đọc toàn database (mỗi 100 bài một request) để tránh trùng, cộng 2 request (đọc lại, ghi) cho mỗi bài. Link tới slug không tồn tại tốn thêm 1 request để kiểm tra có bài nào đang chờ slug không.
 
 ## Bao lâu thì thay đổi lên site
 

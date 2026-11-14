@@ -33,6 +33,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { Client } = require('@notionhq/client')
 import * as blogIndexCache from './blog-index-cache'
+import { getExistingSlug, resolveMissingSlugs } from './slug'
 
 const client = new Client({
   auth: NOTION_API_SECRET,
@@ -59,9 +60,9 @@ export async function getPosts(pageSize = 10) {
 
   const data = await client.databases.query(params)
 
-  return data.results
-    .filter(item => _validPost(item))
-    .map(item => _buildPost(item))
+  return _fillSlugs(
+    data.results.filter(item => _validPost(item)).map(item => _buildPost(item))
+  )
 }
 
 export async function getAllPosts() {
@@ -97,7 +98,26 @@ export async function getAllPosts() {
     }
   }
 
-  return results.filter(item => _validPost(item)).map(item => _buildPost(item))
+  const posts = results
+    .filter(item => _validPost(item))
+    .map(item => _buildPost(item))
+
+  // Bài published có ô Slug trống: sinh slug từ tiêu đề và ghi ngược vào Notion.
+  // Với cache build-time thì set-blog-index-cache.js đã làm việc này, nên ở đây
+  // không còn bài nào thiếu slug.
+  const generated = await resolveMissingSlugs(
+    client,
+    DATABASE_ID,
+    posts
+      .filter(post => !post.Slug)
+      .map(post => ({ id: post.PageId, title: post.Title, date: post.Date }))
+  )
+
+  return posts
+    .map(post =>
+      post.Slug ? post : { ...post, Slug: generated.get(post.PageId) || '' }
+    )
+    .filter(post => !!post.Slug)
 }
 
 export async function getRankedPosts(pageSize = 10) {
@@ -137,9 +157,9 @@ export async function getRankedPosts(pageSize = 10) {
 
   const data = await client.databases.query(params)
 
-  return data.results
-    .filter(item => _validPost(item))
-    .map(item => _buildPost(item))
+  return _fillSlugs(
+    data.results.filter(item => _validPost(item)).map(item => _buildPost(item))
+  )
 }
 
 export async function getPostsBefore(date: string, pageSize = 10) {
@@ -170,9 +190,9 @@ export async function getPostsBefore(date: string, pageSize = 10) {
 
   const data = await client.databases.query(params)
 
-  return data.results
-    .filter(item => _validPost(item))
-    .map(item => _buildPost(item))
+  return _fillSlugs(
+    data.results.filter(item => _validPost(item)).map(item => _buildPost(item))
+  )
 }
 
 export async function getNumberOfPages() {
@@ -260,7 +280,8 @@ export async function getFirstPost() {
     return null
   }
 
-  return _buildPost(data.results[0])
+  const [post] = await _fillSlugs([_buildPost(data.results[0])])
+  return post || null
 }
 
 export async function getPostBySlug(slug: string) {
@@ -289,14 +310,15 @@ export async function getPostBySlug(slug: string) {
   })
 
   if (!data.results.length) {
-    return null
+    return _getPostByGeneratedSlug(slug)
   }
 
   if (!_validPost(data.results[0])) {
     return null
   }
 
-  return _buildPost(data.results[0])
+  const [post] = await _fillSlugs([_buildPost(data.results[0])])
+  return post || null
 }
 
 export async function getPostsByTag(tag: string | undefined, pageSize = 100) {
@@ -329,9 +351,9 @@ export async function getPostsByTag(tag: string | undefined, pageSize = 100) {
 
   const data = await client.databases.query(params)
 
-  return data.results
-    .filter(item => _validPost(item))
-    .map(item => _buildPost(item))
+  return _fillSlugs(
+    data.results.filter(item => _validPost(item)).map(item => _buildPost(item))
+  )
 }
 
 export async function getPostsByTagBefore(
@@ -376,9 +398,9 @@ export async function getPostsByTagBefore(
 
   const data = await client.databases.query(params)
 
-  return data.results
-    .filter(item => _validPost(item))
-    .map(item => _buildPost(item))
+  return _fillSlugs(
+    data.results.filter(item => _validPost(item)).map(item => _buildPost(item))
+  )
 }
 
 export async function getFirstPostByTag(tag: string) {
@@ -418,7 +440,8 @@ export async function getFirstPostByTag(tag: string) {
     return null
   }
 
-  return _buildPost(data.results[0])
+  const [post] = await _fillSlugs([_buildPost(data.results[0])])
+  return post || null
 }
 
 export async function getAllBlocksByBlockId(blockId: string) {
@@ -808,13 +831,53 @@ function _uniqueConditions(conditions = []) {
   })
 }
 
+// Slug trống không còn loại bài: getAllPosts sinh slug cho nó.
 function _validPost(data) {
   const prop = data.properties
-  return (
-    prop.Page.title.length > 0 &&
-    prop.Slug.rich_text.length > 0 &&
-    !!prop.Date.date
-  )
+  return prop.Page.title.length > 0 && !!prop.Date.date
+}
+
+// Các truy vấn trả một phần danh sách: bài nào thiếu slug thì lấy slug đã sinh
+// từ getAllPosts, nơi duy nhất thấy đủ mọi slug để tránh trùng. Chỉ tốn thêm
+// request khi có bài thiếu slug.
+async function _fillSlugs(posts: Post[]): Promise<Post[]> {
+  if (posts.every(post => !!post.Slug)) {
+    return posts
+  }
+
+  const allPosts = await getAllPosts()
+  const slugs = new Map(allPosts.map(post => [post.PageId, post.Slug]))
+
+  return posts
+    .map(post =>
+      post.Slug ? post : { ...post, Slug: slugs.get(post.PageId) || '' }
+    )
+    .filter(post => !!post.Slug)
+}
+
+// Không bài nào có Slug khớp trong Notion. Slug có thể là slug vừa sinh mà
+// chưa ghi được vào Notion (thiếu quyền "Update content"), nên tìm trong các
+// bài published còn trống Slug. Thường không có bài nào: tốn đúng 1 request.
+async function _getPostByGeneratedSlug(slug: string) {
+  const data = await client.databases.query({
+    database_id: DATABASE_ID,
+    filter: _buildFilter([
+      {
+        property: 'Slug',
+        rich_text: {
+          is_empty: true,
+        },
+      },
+    ]),
+    page_size: 1,
+  })
+
+  if (!data.results.length) {
+    return null
+  }
+
+  const allPosts = await getAllPosts()
+  return allPosts.find(post => post.Slug === slug) || null
 }
 
 function _buildPost(data) {
@@ -823,7 +886,7 @@ function _buildPost(data) {
   const post: Post = {
     PageId: data.id,
     Title: prop.Page.title.map(rt => rt.plain_text).join(''),
-    Slug: prop.Slug.rich_text[0].plain_text,
+    Slug: getExistingSlug(data),
     Date: prop.Date.date.start,
     Tags: prop.Tags.multi_select.map(opt => opt.name),
     // Notion splits rich text into segments at every formatting change
