@@ -68,11 +68,15 @@ function assignSlugs(posts, takenSlugs) {
 
 // Chỉ ghi vào Notion khi chạy như production. Preview dùng chung database với
 // production nên không được sửa nội dung; `npm run dev` bỏ filter Published
-// nên bản nháp cũng lọt vào đây.
+// nên bản nháp cũng lọt vào đây. Trên Vercel (`VERCEL` hoặc `VERCEL_ENV` có
+// mặt) chỉ ghi khi chắc chắn là production; thiếu `VERCEL_ENV` thì không ghi.
+// Ngoài Vercel (fork tự host) thì ghi.
 function canWriteSlugs() {
   if (process.env.NODE_ENV === 'development') return false
-  const vercelEnv = process.env.VERCEL_ENV
-  return !vercelEnv || vercelEnv === 'production'
+  if (process.env.VERCEL || process.env.VERCEL_ENV) {
+    return process.env.VERCEL_ENV === 'production'
+  }
+  return true
 }
 
 // Mọi slug đang có trong database, không lọc Published: chỉ đọc để tránh trùng,
@@ -96,8 +100,9 @@ async function fetchAllSlugs(client, databaseId) {
 }
 
 // Ghi slug vào trang. Đọc lại trang trước: nếu người viết vừa gõ Slug tay thì
-// slug tay thắng và không bị ghi đè. Lỗi (thiếu quyền "Update content", rate
-// limit...) chỉ log, bài vẫn hiển thị bằng slug sinh ra trong bộ nhớ.
+// slug tay thắng và không bị ghi đè. Trả về slug đang nằm trong Notion, hoặc
+// null nếu ghi lỗi (thiếu quyền "Update content", rate limit...); lỗi chỉ log
+// page id và mã lỗi.
 async function writeSlug(client, pageId, slug) {
   try {
     const page = await client.pages.retrieve({ page_id: pageId })
@@ -119,32 +124,44 @@ async function writeSlug(client, pageId, slug) {
         'Serving it from memory. If this is restricted_resource, enable ' +
         '"Update content" for the integration.'
     )
-    return slug
+    return null
   }
 }
 
-// Một lượt ghi cho mỗi (trang, slug) trong một process: các getStaticProps chạy
-// song song dùng chung kết quả, và lỗi quyền không bị thử lại ở mọi request.
-const pendingWrites = new Map()
+// Slug đã sinh nhưng chưa nằm trong Notion (ghi lỗi, hoặc môi trường không được
+// ghi), theo page id, sống hết process. Lần sau gặp lại đúng các bài đó thì dùng
+// lại slug cũ: không đọc lại toàn database, không thử ghi lại. Nhờ vậy khi thiếu
+// quyền ghi, mỗi process chỉ trả giá một lần.
+const unsaved = new Map()
 
 // Sinh slug cho `missing` ([{ id, title, date }]), ghi vào Notion nếu được phép.
 // Trả về Map id -> slug.
 async function resolveMissingSlugs(client, databaseId, missing) {
   if (missing.length === 0) return new Map()
 
+  if (missing.every(post => unsaved.has(post.id))) {
+    return new Map(missing.map(post => [post.id, unsaved.get(post.id)]))
+  }
+
   const assigned = assignSlugs(
     missing,
     await fetchAllSlugs(client, databaseId)
   )
-  if (!canWriteSlugs()) return assigned
+
+  if (!canWriteSlugs()) {
+    assigned.forEach((slug, pageId) => unsaved.set(pageId, slug))
+    return assigned
+  }
 
   // Tuần tự để không vượt giới hạn ~3 request/giây của Notion.
   for (const [pageId, slug] of assigned) {
-    const key = `${pageId}:${slug}`
-    if (!pendingWrites.has(key)) {
-      pendingWrites.set(key, writeSlug(client, pageId, slug))
+    const stored = await writeSlug(client, pageId, slug)
+    if (stored) {
+      unsaved.delete(pageId)
+      assigned.set(pageId, stored)
+    } else {
+      unsaved.set(pageId, slug)
     }
-    assigned.set(pageId, await pendingWrites.get(key))
   }
   return assigned
 }

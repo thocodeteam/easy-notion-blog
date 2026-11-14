@@ -9,6 +9,14 @@ Số version của bản fork đánh lại từ `1.0.0`, không nối tiếp ver
 
 ## [Unreleased]
 
+### Added
+
+- Bài để trống ô `Slug` trong Notion giờ vẫn lên site: slug được sinh từ tiêu đề theo đúng
+  tiếng Việt (`định` thành `dinh`, không phải `djinh`) rồi ghi lại vào ô `Slug`, nên URL cố
+  định từ lần đầu. Slug gõ tay luôn được giữ, slug cũ không đổi. Người fork cần bật quyền
+  "Update content" cho integration Notion; thiếu quyền thì bài vẫn hiện nhưng slug chưa
+  được lưu. Chi tiết ở `docs/notion-cms.md`.
+
 ## [1.1.0] - 2026-11-14
 
 ### Added
