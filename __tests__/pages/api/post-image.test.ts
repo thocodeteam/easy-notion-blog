@@ -77,6 +77,18 @@ describe('/api/post-image', () => {
       expect(res.getHeader('Cache-Control')).toContain('s-maxage=1800')
     })
 
+    test('answers HEAD like GET', async () => {
+      mockedGetPostBySlug.mockResolvedValue({ Slug: slug, OGImage: imageUrl })
+      const { req, res } = createMocks({
+        method: 'HEAD',
+        url: `/api/post-image?slug=${slug}`,
+      })
+
+      await ApiPostImage(req, res)
+      expect(res.statusCode).toEqual(302)
+      expect(res._getRedirectUrl()).toEqual(imageUrl)
+    })
+
     test('returns 500 when Notion fails', async () => {
       mockedGetPostBySlug.mockRejectedValue(new Error('notion down'))
       jest.spyOn(console, 'log').mockImplementation(() => undefined)

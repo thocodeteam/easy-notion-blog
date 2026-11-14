@@ -5,8 +5,8 @@ import { getPostBySlug } from '../../lib/notion/client'
 // đây, route lấy URL mới từ Notion rồi redirect. Chỉ redirect tới URL lấy từ
 // Notion, không bao giờ tới URL do người gọi truyền vào.
 const ApiPostImage = async function(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET')
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.setHeader('Allow', 'GET, HEAD')
     res.statusCode = 405
     res.end()
     return
