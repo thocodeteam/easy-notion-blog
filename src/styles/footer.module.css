@@ -2,7 +2,7 @@
   margin: 60px 0 20px;
   padding-top: 24px;
   border-top: 1px solid #e4e4e4;
-  font-size: 1.0625rem;
+  font-size: var(--font-small);
 }
 
 /* Khối trên: thương hiệu + các cột điều hướng */
@@ -21,7 +21,7 @@
 .brandTitle {
   margin: 0 0 var(--gap-half);
   font-family: 'Spectral', serif;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   line-height: 1.4;
   color: #000;
 }
@@ -30,16 +30,16 @@
 }
 .brandDescription {
   margin: 0 0 var(--gap-half);
-  font-size: 1.0625rem;
-  line-height: 1.6;
+  font-size: var(--font-small);
+  line-height: var(--line-small);
   color: #555;
 }
 .brandMotto {
   margin: 0;
   font-family: 'Spectral', serif;
-  font-size: 1rem;
+  font-size: var(--font-small);
   font-style: italic;
-  line-height: 1.6;
+  line-height: var(--line-small);
   color: #888;
 }
 
@@ -53,7 +53,8 @@
 }
 .columnTitle {
   margin: 0 0 var(--gap-half);
-  font-size: 0.9375rem;
+  font-size: var(--font-meta);
+  line-height: var(--line-small);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -63,7 +64,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  font-size: 1.0625rem;
+  font-size: var(--font-small);
   line-height: 1.9rem;
 }
 .column ul li a {
@@ -82,7 +83,8 @@
   margin-top: var(--gap-double);
   padding-top: var(--gap);
   border-top: 1px solid #eee;
-  font-size: 0.9375rem;
+  font-size: var(--font-small);
+  line-height: var(--line-small);
   color: #777;
 }
 .copyright,

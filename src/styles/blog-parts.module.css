@@ -1,37 +1,37 @@
+/* Ngày, tag: kiểu meta của Substack (11px/20px, w500, chữ hoa, giãn 0.2px) */
+.postDate,
+.postTags {
+  font-size: var(--font-meta);
+  line-height: var(--line-small);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
 .postDate {
   padding: 0 0 0.3rem;
-  font-size: 1.125rem;
-}
-
-.postTags {
-  font-size: 1.125rem;
 }
 .postTags a {
   padding-right: 0.8rem;
 }
 
+/* Tiêu đề trang bài: như .post-title của Substack, 32px/36px cả desktop lẫn mobile */
 .postTitle {
-  font-size: 1.8rem;
+  font-size: 2rem;
+  line-height: 1.125;
   color: var(--fg);
 }
-@media (max-width: 600px) {
-  .postTitle {
-    font-size: 1.38rem;
-  }
-}
+/* Tiêu đề trong danh sách: block để line-height của link quyết định khoảng dòng
+   (nếu inline thì strut 32px của h3 kéo giãn dòng) */
 .postTitle a {
-  font-size: 1.38rem;
+  display: block;
+  font-size: calc(var(--font-body) * 1.125);
+  line-height: var(--line-heading);
   color: inherit;
-}
-@media (max-width: 600px) {
-  .postTitle a {
-    font-size: 1.32rem;
-  }
 }
 
 .postExcerpt {
   padding: 0.4rem 0;
-  font-size: 1.25rem;
+  font-size: var(--font-body);
 }
 
 .postBody {
@@ -47,7 +47,7 @@
   margin: 1rem auto 0;
   border: 1px solid var(--accents-2);
   color: inherit;
-  font-size: 1.0625rem;
+  font-size: 0.85rem;
   text-align: center;
   line-height: 3rem;
 }
@@ -69,7 +69,7 @@
   list-style: none;
   margin: 0;
   padding: var(--gap) 0;
-  font-size: 1.125rem;
+  font-size: 0.9rem;
 }
 .pagination li a,
 .pagination li span {
@@ -105,7 +105,7 @@
 @media (max-width: 600px) {
   .pagination ul {
     gap: var(--gap-quarter);
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
   .pagination li a,
   .pagination li span {
@@ -114,15 +114,18 @@
   }
 }
 
+/* Sidebar: tiêu đề mục như tiêu đề khối của Substack (20px/24px), mục con như chữ phụ (15px/20px) */
 .noContents {
-  font-size: 1.1875rem;
+  font-size: 0.9375rem;
+  line-height: var(--line-small);
 }
 
 .blogPostLink {
 }
 .blogPostLink h3 {
   margin: 0;
-  font-size: 1.265rem;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
 }
 .blogPostLink ul {
   list-style-type: none;
@@ -131,19 +134,22 @@
 }
 .blogPostLink ul li {
   position: relative;
-  font-size: 1.1875rem;
+  font-size: 0.9375rem;
   padding: 0.4rem 0;
   padding-left: 0.7rem;
-  line-height: 1.45rem;
+  line-height: var(--line-small);
 }
+/* Chấm đầu dòng là inline-block, vertical-align: middle đặt tâm chấm ở baseline + nửa
+   x-height của dòng đầu, nên luôn nằm giữa chữ dù font hệ thống nào được chọn. Margin âm
+   kéo chấm vào vùng padding-left, chữ vẫn bắt đầu ở 0.7rem như cũ. */
 .blogPostLink ul li:before {
   border-radius: 50%;
   width: 5px;
   height: 5px;
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0.9rem;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: -0.7rem;
+  margin-right: calc(0.7rem - 5px);
   content: '';
   background: #333;
 }
@@ -152,7 +158,8 @@
 }
 .blogTagLink h3 {
   margin: 0;
-  font-size: 1.265rem;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
 }
 .blogTagLink ul {
   list-style-type: none;
@@ -161,30 +168,30 @@
 }
 .blogTagLink ul li {
   position: relative;
-  font-size: 1.25rem;
+  font-size: 0.9375rem;
   padding: 0.4rem 0;
   padding-left: 0.7rem;
-  line-height: 1.45rem;
+  line-height: var(--line-small);
 }
 .blogTagLink ul li:before {
   border-radius: 50%;
   width: 5px;
   height: 5px;
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0.9rem;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: -0.7rem;
+  margin-right: calc(0.7rem - 5px);
   content: '';
   background: #333;
 }
 
 .postsNotFound {
-  font-size: 1.25rem;
+  font-size: var(--font-body);
 }
 
 @media (max-width: 600px) {
   .tag {
-    font-size: 0.9375rem;
+    font-size: var(--font-meta);
     padding-right: 0.75rem;
   }
 
@@ -193,7 +200,7 @@
   }
 
   .post .caption {
-    font-size: 1.125rem;
+    font-size: var(--font-small);
   }
 
   .nextContainer {

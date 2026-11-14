@@ -2,11 +2,12 @@
 }
 
 .equation {
-  font-size: 1.25rem;
+  font-size: var(--font-body);
 }
 
 .caption {
-  font-size: 1.125rem;
+  font-size: var(--font-small);
+  line-height: var(--line-small);
   color: var(--accents-3);
   text-align: center;
 }
@@ -29,8 +30,8 @@
   margin: 5px;
   padding: 0.8rem;
   background: rgb(247, 246, 243);
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
   border-radius: var(--radius);
 }
 .code pre code {
@@ -99,8 +100,8 @@
   margin: 1rem auto;
   padding: 16px 12px;
   width: 100%;
-  font-size: 1.1875rem;
-  line-height: 1.6;
+  font-size: var(--font-body);
+  line-height: var(--line-body);
   border-radius: 3px;
   border-width: 1px;
   border-style: solid;
@@ -110,7 +111,7 @@
 }
 .callout div {
   margin: 0;
-  line-height: 1.6;
+  line-height: var(--line-body);
 }
 .callout div:first-child {
   margin-right: 0.7rem;
@@ -140,7 +141,7 @@
   overflow: hidden;
   width: 100%;
   max-width: 100%;
-  font-size: 1.125rem;
+  font-size: 0.9rem;
 }
 .bookmark > a {
   width: 100%;
@@ -160,8 +161,8 @@
   color: var(--fg);
 }
 .bookmark > a > div:first-child > div:first-child {
-  font-size: 17.5px;
-  line-height: 25px;
+  font-size: 14px;
+  line-height: 20px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -169,10 +170,10 @@
   margin-bottom: 2px;
 }
 .bookmark > a > div:first-child > div:nth-child(2) {
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 12px;
+  line-height: 16px;
   opacity: .8;
-  height: 40px;
+  height: 32px;
   overflow: hidden;
 }
 .bookmark > a > div:first-child > div:last-child {
@@ -190,8 +191,8 @@
   display: inline-block;
 }
 .bookmark > a > div:first-child > div:last-child > div:last-child {
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 12px;
+  line-height: 16px;
   color: var(--fg);
   white-space: nowrap;
   overflow: hidden;
