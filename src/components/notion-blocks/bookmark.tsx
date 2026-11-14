@@ -24,7 +24,8 @@ const Bookmark = ({ block }) => {
   useEffect(() => {
     try {
       const url = new URL(sURL)
-      axios.get(`/api/url-metadata?url=${url.toString()}`)
+      // encode để URL có dấu & hay # không bị cắt thành nhiều query param
+      axios.get(`/api/url-metadata?url=${encodeURIComponent(url.toString())}`)
         .then((res) => {
           setMetadata(res.data as Metadata)
         })
