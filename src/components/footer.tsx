@@ -30,7 +30,7 @@ const categoryTags: string[] = [
 
 // Kênh bên ngoài. Chỉ để những link thật sự tồn tại.
 const socialLinks: FooterLink[] = [
-  { label: 'Website', path: 'https://thocode.com' },
+  { label: 'balut.dev', path: 'https://balut.dev' },
 ]
 
 // Tên tạp chí đã hiển thị ngay trên nên bỏ tiền tố "<tên> - " khỏi tagline,
@@ -89,7 +89,9 @@ const Footer = () => (
           <ul>
             {socialLinks.map(({ label, path }) => (
               <li key={label}>
-                <ExtLink href={path}>{label}</ExtLink>
+                <a href={path} target="_blank" rel="noopener noreferrer">
+                  {label}
+                </a>
               </li>
             ))}
             <li>
