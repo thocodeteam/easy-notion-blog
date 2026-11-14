@@ -38,7 +38,7 @@ node scripts/set-blog-index-cache.js && next build && node scripts/expire-blog-i
 Hệ quả cần biết:
 
 - **Danh sách tag khác nhau giữa hai chế độ.** Chế độ cache lấy tag từ các bài đã publish. Chế độ trực tiếp lấy toàn bộ option của cột `Tags` trong schema database, kể cả tag chưa có bài nào được publish.
-- Ở `NODE_ENV=development`, `_buildFilter` bỏ điều kiện `Published` và `Date`, nên `npm run dev` hiện cả bài nháp. Bài thiếu `Page`, `Slug` hoặc `Date` vẫn bị loại bởi `_validPost`.
+- Ở `NODE_ENV=development`, `_buildFilter` bỏ điều kiện `Published` và `Date`, nên `npm run dev` hiện cả bài nháp. Bài thiếu `Page` hoặc `Date` vẫn bị loại bởi `_validPost`; bài thiếu `Slug` được sinh slug nhưng không ghi vào Notion (xem [notion-cms.md](notion-cms.md#slug-tự-sinh)).
 
 ## Mô hình dữ liệu
 
