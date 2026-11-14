@@ -34,10 +34,11 @@ export async function getStaticProps({ params: { slug } }) {
 
   if (!post) {
     console.log(`Failed to find post for slug: ${slug}`)
+    // Trả 404 thật. Trước đây trả props { redirect } khiến component đọc
+    // fallback[slug] với fallback undefined và throw → HTTP 500.
+    // revalidate để slug này tự hết 404 khi bài được publish sau đó.
     return {
-      props: {
-        redirect: '/blog',
-      },
+      notFound: true,
       revalidate: 30,
     }
   }
