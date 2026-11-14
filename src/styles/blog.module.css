@@ -50,39 +50,39 @@
 .post :global(h4) {
   margin: 1.8rem 0 0.8rem;
   color: var(--fg);
-  font-size: 1.1rem;
+  font-size: 1.265rem;
 }
 .post :global(h4):after {
   color: var(--accents-1);
-  font-size: 0.9rem;
+  font-size: 1rem;
   content: '▼';
   padding-left: 0.2rem;
 }
 .post :global(h5) {
   margin: 1.8rem 0 0.8rem;
   color: var(--fg);
-  font-size: 1.1rem;
+  font-size: 1.265rem;
 }
 .post :global(h5):after {
   color: var(--accents-1);
-  font-size: 0.9rem;
+  font-size: 1rem;
   content: '▼';
   padding-left: 0.2rem;
 }
 .post :global(h6) {
   margin: 1.8rem 0 0.8rem;
   color: var(--fg);
-  font-size: 1.1rem;
+  font-size: 1.265rem;
 }
 .post :global(h6):after {
   color: var(--accents-1);
-  font-size: 0.9rem;
+  font-size: 1rem;
   content: '▼';
   padding-left: 0.2rem;
 }
 .post :global(p) {
   margin: 0.3rem 0;
-  font-size: 1rem;
+  font-size: 1.25rem;
   min-height: 1.8rem;
 }
 .post :global(video),
@@ -94,17 +94,17 @@
   margin: 0.6rem 0;
   padding: 0 0.9rem;
   border-left: 3px solid var(--fg);
-  font-size: 1rem;
-  line-height: 1.8rem;
+  font-size: 1.25rem;
+  line-height: 1.7;
 }
 .post table {
   margin: 1rem 0;
 }
 .post ul {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .post ol {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .post p code {
   color: #eb5757;

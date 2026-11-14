@@ -1,37 +1,37 @@
 .postDate {
   padding: 0 0 0.3rem;
-  font-size: 0.9rem;
+  font-size: 1.125rem;
 }
 
 .postTags {
-  font-size: 0.9rem;
+  font-size: 1.125rem;
 }
 .postTags a {
   padding-right: 0.8rem;
 }
 
 .postTitle {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   color: var(--fg);
 }
 @media (max-width: 600px) {
   .postTitle {
-    font-size: 1.2rem;
+    font-size: 1.38rem;
   }
 }
 .postTitle a {
-  font-size: 1.2rem;
+  font-size: 1.38rem;
   color: inherit;
 }
 @media (max-width: 600px) {
   .postTitle a {
-    font-size: 1.15rem;
+    font-size: 1.32rem;
   }
 }
 
 .postExcerpt {
   padding: 0.4rem 0;
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .postBody {
@@ -47,7 +47,7 @@
   margin: 1rem auto 0;
   border: 1px solid var(--accents-2);
   color: inherit;
-  font-size: 0.85rem;
+  font-size: 1.0625rem;
   text-align: center;
   line-height: 3rem;
 }
@@ -69,7 +69,7 @@
   list-style: none;
   margin: 0;
   padding: var(--gap) 0;
-  font-size: 0.9rem;
+  font-size: 1.125rem;
 }
 .pagination li a,
 .pagination li span {
@@ -105,7 +105,7 @@
 @media (max-width: 600px) {
   .pagination ul {
     gap: var(--gap-quarter);
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
   .pagination li a,
   .pagination li span {
@@ -115,13 +115,14 @@
 }
 
 .noContents {
+  font-size: 1.1875rem;
 }
 
 .blogPostLink {
 }
 .blogPostLink h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.265rem;
 }
 .blogPostLink ul {
   list-style-type: none;
@@ -130,10 +131,10 @@
 }
 .blogPostLink ul li {
   position: relative;
-  font-size: 0.95rem;
+  font-size: 1.1875rem;
   padding: 0.4rem 0;
   padding-left: 0.7rem;
-  line-height: 1.2rem;
+  line-height: 1.45rem;
 }
 .blogPostLink ul li:before {
   border-radius: 50%;
@@ -151,7 +152,7 @@
 }
 .blogTagLink h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.265rem;
 }
 .blogTagLink ul {
   list-style-type: none;
@@ -160,10 +161,10 @@
 }
 .blogTagLink ul li {
   position: relative;
-  font-size: 1rem;
+  font-size: 1.25rem;
   padding: 0.4rem 0;
   padding-left: 0.7rem;
-  line-height: 1.2rem;
+  line-height: 1.45rem;
 }
 .blogTagLink ul li:before {
   border-radius: 50%;
@@ -178,11 +179,12 @@
 }
 
 .postsNotFound {
+  font-size: 1.25rem;
 }
 
 @media (max-width: 600px) {
   .tag {
-    font-size: 0.75rem;
+    font-size: 0.9375rem;
     padding-right: 0.75rem;
   }
 
@@ -191,7 +193,7 @@
   }
 
   .post .caption {
-    font-size: 0.9rem;
+    font-size: 1.125rem;
   }
 
   .nextContainer {
