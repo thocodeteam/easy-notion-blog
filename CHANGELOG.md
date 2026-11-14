@@ -8,6 +8,10 @@ Repo này fork từ [otoyo/easy-notion-blog](https://github.com/otoyo/easy-notio
 Số version của bản fork đánh lại từ `1.0.0`, không nối tiếp version của upstream.
 
 ## [Unreleased]
+
+### Added
+
+- Footer hiện số phiên bản đang chạy, ngay dưới câu Truyện Kiều.
 ### Changed
 - Nút chia sẻ cuối bài chỉ còn Facebook và Twitter/X. Bỏ Pocket (đã ngừng hoạt động)
   và Hatena (mạng xã hội Nhật kế thừa từ bản gốc). Nút chỉ hiện khi đặt

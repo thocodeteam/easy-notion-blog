@@ -3,6 +3,9 @@ import Link from 'next/link'
 import ExtLink from './ext-link'
 import { SITE_TITLE, SITE_DESCRIPTION } from './document-head'
 import { getTagLink } from '../lib/blog-helpers'
+// Chỉ lấy trường version; webpack chỉ đưa trường này vào bundle.
+// Release bump nó bằng `npm version`, nên nó luôn khớp tag vX.Y.Z.
+import { version } from '../../package.json'
 
 import styles from '../styles/footer.module.css'
 
@@ -55,6 +58,7 @@ const Footer = () => (
           <br />
           Mua vui cũng được một vài trống canh
         </p>
+        <p className={styles.brandVersion}>Phiên bản {version}</p>
       </div>
 
       <nav className={styles.columns} aria-label="Điều hướng chân trang">
