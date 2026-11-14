@@ -81,6 +81,7 @@ Repo chưa commit lockfile (`package-lock.json` đã sinh ở local nhưng chưa
 | `"engines": { "node": "24.x" }` | Vercel đã ngừng Node 18. Giá trị này override setting trên dashboard. |
 | `.npmrc`: `legacy-peer-deps=true` | `react-katex@2.0.2` khai peer `react ^15 \|\| ^16`, project dùng React 17 → npm ERESOLVE |
 | `"mermaid": "9.1.7"` (pin cứng) | mermaid 9.4.x kéo `cytoscape` mới, bản đó bỏ path `./dist/cytoscape.umd.js` khỏi `exports` → webpack báo `Module not found` |
+| `metascraper*` `5.50.6` (pin cứng cả 4 gói) | Từ 5.51, `@metascraper/helpers` gọi `require()` lên các gói chỉ có bản ESM (`condense-whitespace` 3, `mime` 4, `normalize-url` 9...). Node 24 ở local cho phép việc này nên mọi thứ chạy bình thường, nhưng function trên Vercel báo `ERR_REQUIRE_ESM` và `/api/url-metadata` trả 500. Muốn nâng version thì thử trước bằng `node --no-experimental-require-module -e "require('metascraper')"` và kiểm tra route trên Vercel preview. |
 
 Commit `package-lock.json` sẽ giải quyết dứt điểm việc version trôi.
 
