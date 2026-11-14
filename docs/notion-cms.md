@@ -55,11 +55,25 @@ Khi nào ghi vào Notion:
 
 - Lúc `npm run build` (bước tạo `.blog_index_data`) và lúc ISR tái tạo trang ở production.
 - **Không** ghi ở Vercel Preview (`VERCEL_ENV=preview`, dùng chung database với production) và ở `npm run dev` (bản nháp lọt qua filter). Ở đó slug chỉ sinh trong bộ nhớ, giống hệt slug production sẽ ghi.
+- Trên Vercel, chỉ ghi khi `VERCEL_ENV=production`. Nếu thấy `VERCEL` mà không thấy `VERCEL_ENV` (tắt *Automatically expose System Environment Variables* trong Project Settings) thì coi như không được ghi. Ngoài Vercel (fork tự host, không có hai biến này) thì ghi.
 - Trước khi ghi, code đọc lại trang; nếu ô `Slug` vừa được gõ tay thì dùng slug đó.
 
-Ghi cần integration có quyền **Update content** (Notion → *Settings* → *Connections* → *Develop or manage integrations* → integration → *Capabilities*). Thiếu quyền thì Notion trả lỗi `restricted_resource`; site log cảnh báo và vẫn hiển thị bài bằng slug sinh trong bộ nhớ, nhưng slug chưa cố định: sửa tiêu đề lúc đó sẽ đổi URL. Mỗi process chỉ thử ghi một lần.
+Ghi cần integration có quyền **Update content** (Notion → *Settings* → *Connections* → *Develop or manage integrations* → integration → *Capabilities*). Thiếu quyền thì Notion trả lỗi `restricted_resource`; site log cảnh báo (page id và mã lỗi) và vẫn hiển thị bài bằng slug sinh trong bộ nhớ, nhưng slug chưa cố định: sửa tiêu đề lúc đó sẽ đổi URL. Mỗi process thử ghi một bài một lần rồi nhớ slug chưa lưu tới hết process. Trên Vercel, process là bước build và từng instance serverless, nên mỗi lần build và mỗi instance mới khởi động sẽ thử lại một lần.
 
-Chi phí request Notion: chỉ khi có bài thiếu slug mới tốn thêm 1 lượt đọc toàn database (mỗi 100 bài một request) để tránh trùng, cộng 2 request (đọc lại, ghi) cho mỗi bài. Link tới slug không tồn tại tốn thêm 1 request để kiểm tra có bài nào đang chờ slug không.
+### Chi phí request Notion
+
+Khi mọi bài đã có slug: không tốn thêm request nào ngoài một truy vấn nhỏ cho link tới slug không tồn tại (xem dưới).
+
+Khi có bài published còn trống Slug, mỗi process tính slug một lượt rồi dùng chung cho mọi truy vấn trong 60 giây (bằng chu kỳ ISR), kể cả các truy vấn chạy song song trong cùng một lần render trang:
+
+- 1 truy vấn tìm bài published trống Slug (mỗi 100 bài một request);
+- lần đầu gặp bài đó trong process: thêm 1 lượt đọc toàn database để tránh trùng (mỗi 100 bài một request), rồi đọc lại và ghi từng bài, tuần tự (2 request mỗi bài);
+- ghi thành công thì từ lượt sau bài không còn trống Slug, chi phí về 0;
+- ghi thất bại thì các lượt sau trong process chỉ còn truy vấn đầu tiên, mỗi 60 giây một lần.
+
+Link tới slug không tồn tại (trang bài, `/api/post-image`, `/api/blocks`) tốn 1 truy vấn `Slug equals` như trước, cộng truy vấn tìm bài trống Slug ở trên, nhưng truy vấn này dùng chung kết quả 60 giây nên tối đa 1 request mỗi phút mỗi process, dù có bao nhiêu link sai.
+
+Bài mới đăng mà trống Slug có thể hiện chậm tới 60 giây so với trước, vì process đang chạy dùng lại kết quả lượt tính gần nhất.
 
 ## Bao lâu thì thay đổi lên site
 

@@ -98,26 +98,11 @@ export async function getAllPosts() {
     }
   }
 
-  const posts = results
-    .filter(item => _validPost(item))
-    .map(item => _buildPost(item))
-
-  // Bài published có ô Slug trống: sinh slug từ tiêu đề và ghi ngược vào Notion.
-  // Với cache build-time thì set-blog-index-cache.js đã làm việc này, nên ở đây
-  // không còn bài nào thiếu slug.
-  const generated = await resolveMissingSlugs(
-    client,
-    DATABASE_ID,
-    posts
-      .filter(post => !post.Slug)
-      .map(post => ({ id: post.PageId, title: post.Title, date: post.Date }))
+  // Với cache build-time thì set-blog-index-cache.js đã sinh đủ slug, nên
+  // _fillSlugs không tốn request nào.
+  return _fillSlugs(
+    results.filter(item => _validPost(item)).map(item => _buildPost(item))
   )
-
-  return posts
-    .map(post =>
-      post.Slug ? post : { ...post, Slug: generated.get(post.PageId) || '' }
-    )
-    .filter(post => !!post.Slug)
 }
 
 export async function getRankedPosts(pageSize = 10) {
@@ -837,29 +822,62 @@ function _validPost(data) {
   return prop.Page.title.length > 0 && !!prop.Date.date
 }
 
-// Các truy vấn trả một phần danh sách: bài nào thiếu slug thì lấy slug đã sinh
-// từ getAllPosts, nơi duy nhất thấy đủ mọi slug để tránh trùng. Chỉ tốn thêm
-// request khi có bài thiếu slug.
+// Bài nào ô Slug trống thì lấy slug đã sinh. Không tốn request khi mọi bài đã
+// có slug.
 async function _fillSlugs(posts: Post[]): Promise<Post[]> {
   if (posts.every(post => !!post.Slug)) {
     return posts
   }
 
-  const allPosts = await getAllPosts()
-  const slugs = new Map(allPosts.map(post => [post.PageId, post.Slug]))
+  const pending = await _getPostsPendingSlug()
 
   return posts
-    .map(post =>
-      post.Slug ? post : { ...post, Slug: slugs.get(post.PageId) || '' }
-    )
+    .map(post => {
+      if (post.Slug) return post
+      const generated = pending.get(post.PageId)
+      return { ...post, Slug: generated ? generated.Slug : '' }
+    })
     .filter(post => !!post.Slug)
 }
 
 // Không bài nào có Slug khớp trong Notion. Slug có thể là slug vừa sinh mà
 // chưa ghi được vào Notion (thiếu quyền "Update content"), nên tìm trong các
-// bài published còn trống Slug. Thường không có bài nào: tốn đúng 1 request.
+// bài đang chờ slug. Tối đa 1 request mỗi PENDING_SLUGS_TTL_MS mỗi process,
+// dù có bao nhiêu link sai.
 async function _getPostByGeneratedSlug(slug: string) {
-  const data = await client.databases.query({
+  const pending = await _getPostsPendingSlug()
+  return Array.from(pending.values()).find(post => post.Slug === slug) || null
+}
+
+// Bài published có ô Slug trống, đã gán slug, theo page id. Mọi truy vấn trong
+// một process dùng chung một lượt tính, kể cả các lời gọi song song trong cùng
+// getStaticProps, và giữ kết quả bằng đúng chu kỳ ISR. Bài mới đăng mà chưa có
+// slug hiện lên chậm nhất sau chừng ấy.
+const PENDING_SLUGS_TTL_MS = 60 * 1000
+let pendingSlugs: {
+  expiresAt: number
+  posts: Promise<Map<string, Post>>
+} | null = null
+
+function _getPostsPendingSlug(): Promise<Map<string, Post>> {
+  if (pendingSlugs && Date.now() < pendingSlugs.expiresAt) {
+    return pendingSlugs.posts
+  }
+
+  const entry = {
+    expiresAt: Date.now() + PENDING_SLUGS_TTL_MS,
+    posts: _resolvePostsPendingSlug(),
+  }
+  pendingSlugs = entry
+  // Lỗi đọc (rate limit...) không được giữ suốt TTL: lần gọi sau thử lại.
+  entry.posts.catch(() => {
+    if (pendingSlugs === entry) pendingSlugs = null
+  })
+  return entry.posts
+}
+
+async function _resolvePostsPendingSlug(): Promise<Map<string, Post>> {
+  const params = {
     database_id: DATABASE_ID,
     filter: _buildFilter([
       {
@@ -869,15 +887,38 @@ async function _getPostByGeneratedSlug(slug: string) {
         },
       },
     ]),
-    page_size: 1,
-  })
-
-  if (!data.results.length) {
-    return null
+    page_size: 100,
   }
 
-  const allPosts = await getAllPosts()
-  return allPosts.find(post => post.Slug === slug) || null
+  let results = []
+  while (true) {
+    const data = await client.databases.query(params)
+
+    results = results.concat(data.results)
+
+    if (!data.has_more) {
+      break
+    }
+
+    params['start_cursor'] = data.next_cursor
+  }
+
+  const posts: Post[] = results
+    .filter(item => _validPost(item))
+    .map(item => _buildPost(item))
+
+  const generated = await resolveMissingSlugs(
+    client,
+    DATABASE_ID,
+    posts.map(post => ({ id: post.PageId, title: post.Title, date: post.Date }))
+  )
+
+  return new Map(
+    posts.map(post => [
+      post.PageId,
+      { ...post, Slug: generated.get(post.PageId) || '' },
+    ])
+  )
 }
 
 function _buildPost(data) {
