@@ -1,86 +1,81 @@
 # Hạ tầng và triển khai
 
-Thông tin dưới đây đọc từ Vercel API và DNS công khai (10/2026). Không có giá trị bí mật nào trong tài liệu này.
-
 ## Sơ đồ
 
 ```
   Người đọc
      │  https://thocode.com  ──308──>  https://www.thocode.com
      ▼
-  DNS (Porkbun)
-     │  thocode.com      A     76.76.21.21
-     │  www.thocode.com  CNAME cname.vercel-dns.com
+  DNS (nhà đăng ký tên miền)
+     │  thocode.com      A     (IP Vercel)
+     │  www.thocode.com  CNAME (CNAME Vercel)
      ▼
   Vercel Edge (CDN, cache trang ISR)
      │
      ▼
-  Vercel Serverless Functions (region iad1, Washington D.C.)
+  Vercel Serverless Functions
      │  render ISR, /api/blocks, /api/url-metadata
      ▼
-  Notion API  (database bài viết)        Google Analytics 4 (phía trình duyệt)
+  Notion API (database bài viết, database liên hệ)
+  Cloudflare Turnstile siteverify (form /lien-he)
+                                        Google Analytics 4 (phía trình duyệt)
 ```
 
 ## Thành phần
 
-| Thành phần | Nhà cung cấp | Định danh |
-|---|---|---|
-| Mã nguồn | GitHub | `thocodeteam/easy-notion-blog`, nhánh `main` |
-| Hosting, CDN, function | Vercel | project `thocode-easy-notion-blog` (`prj_Bg0ui1PPfA93OLGSHQHRkpJkvuIY`), team `team_9Wh2VN1JYWaAUaPoj3rFsaAP` |
-| Tên miền, DNS | Porkbun | nameserver `curitiba`, `fortaleza`, `maceio`, `salvador` `.ns.porkbun.com` |
-| Nội dung | Notion | database `DATABASE_ID`, integration `NOTION_API_SECRET` |
-| Phân tích | Google Analytics 4 | `NEXT_PUBLIC_GA_TRACKING_ID` |
-| CI | GitHub Actions | `.github/workflows/lint.yml`, `test.yml` |
+| Thành phần | Dùng gì |
+|---|---|
+| Mã nguồn | GitHub, nhánh production `main` |
+| Hosting, CDN, function | Vercel (gói Hobby là đủ) |
+| Tên miền, DNS | Nhà đăng ký bất kỳ; trỏ A/CNAME về Vercel |
+| Nội dung | Một database Notion + một Notion integration |
+| Phân tích | Google Analytics 4 (tuỳ chọn) |
+| Chống spam form liên hệ | Cloudflare Turnstile (chỉ dùng widget, DNS không cần qua Cloudflare) |
+| CI | GitHub Actions (`.github/workflows/lint.yml`, `test.yml`) |
 
-## Vercel project
+## Dựng một bản deploy mới
 
-| Setting | Giá trị | Ghi chú |
-|---|---|---|
-| Framework preset | Next.js | |
-| Build / Install / Output command | mặc định (để trống) | Vercel chạy `npm install` rồi `npm run build` |
-| Root directory | gốc repo | |
-| Node.js version (dashboard) | 18.x | Bị override bởi `engines.node: "24.x"` trong `package.json`; build log có warning, bình thường |
-| Function region | `iad1` | |
-| Production branch | `main` | |
-
-### Domain
-
-| Domain | Vai trò | Cấu hình DNS |
-|---|---|---|
-| `www.thocode.com` | Domain production chính | CNAME `cname.vercel-dns.com` |
-| `thocode.com` | Redirect 308 sang `www.thocode.com` (setting trong Vercel) | A `76.76.21.21` |
-| `thocode-easy-notion-blog.vercel.app` | Domain mặc định của Vercel | — |
-
-Vercel đánh dấu cả hai domain riêng là `misconfigured: false`. Vercel có gợi ý giá trị DNS mới (A `216.198.79.1`, CNAME `f71adab2624682b8.vercel-dns-017.com`) với trạng thái `optional-change`; giá trị cũ vẫn chạy, đổi hay không là tuỳ chọn.
+1. Chuẩn bị database Notion theo [notion-cms.md](notion-cms.md) và lấy `DATABASE_ID`, `NOTION_API_SECRET`.
+2. Trên Vercel: *Add New → Project*, import repo GitHub. Framework preset Next.js, để trống Build/Install/Output command.
+3. Thêm biến môi trường (bảng dưới) cho Production, Preview và Development.
+4. Deploy. Lần build đầu sẽ gọi Notion để sinh sẵn mọi trang.
+5. Gắn domain trong *Settings → Domains*, rồi tạo bản ghi DNS theo giá trị Vercel hiển thị.
 
 ### Biến môi trường
 
-| Biến | Đã đặt trên Vercel | Môi trường | Dùng cho |
-|---|---|---|---|
-| `NOTION_API_SECRET` | có | Production, Preview, Development | Gọi Notion API. Thiếu thì build throw. |
-| `DATABASE_ID` | có | Production, Preview, Development | Database bài viết. Thiếu thì build throw. |
-| `NEXT_PUBLIC_GA_TRACKING_ID` | có | Production, Preview, Development | GA4 |
-| `NEXT_PUBLIC_URL` | **không** | — | `og:url`, `canonical`, `og:image` mặc định, nút chia sẻ. Xem [known-issues.md](known-issues.md). |
+| Biến | Bắt buộc | Dùng cho |
+|---|---|---|
+| `NOTION_API_SECRET` | có | Gọi Notion API. Thiếu thì `next.config.js` throw khi build. |
+| `DATABASE_ID` | có | Database bài viết. Thiếu thì build throw. |
+| `NEXT_PUBLIC_URL` | nên có | URL gốc của site, ví dụ `https://www.thocode.com`. Cần cho `og:url`, `canonical`, `og:image` mặc định và nút chia sẻ. Thiếu thì các phần này bị bỏ qua, không báo lỗi. |
+| `NEXT_PUBLIC_GA_TRACKING_ID` | không | Measurement ID của GA4 |
+| `CONTACT_DATABASE_ID` | cho form liên hệ | Database Notion nhận form `/lien-he` (xem [notion-cms.md](notion-cms.md#database-liên-hệ)) |
+| `TURNSTILE_SECRET_KEY` | cho form liên hệ | Secret key của widget Cloudflare Turnstile. Đánh dấu *Sensitive* trên Vercel. |
+| `TURNSTILE_HOSTNAMES` | cho form liên hệ | Danh sách hostname hợp lệ, cách nhau bởi dấu phẩy, ví dụ `thocode.com,www.thocode.com`. Không đưa `localhost` vào giá trị production. |
 
-Biến `NEXT_PUBLIC_*` được nhúng vào bundle lúc build: sau khi đổi giá trị phải deploy lại (push commit mới, hoặc Redeploy để build lại với env mới).
+Thiếu một trong ba biến của form liên hệ thì site vẫn build và chạy bình thường, chỉ `/api/contact` trả 503. Mỗi hostname trong `TURNSTILE_HOSTNAMES` cũng phải nằm trong danh sách domain của widget trên Cloudflare dashboard, nếu không widget không hiện.
 
-Để xem/sửa: Vercel dashboard → project → *Settings* → *Environment Variables*.
+Biến `NEXT_PUBLIC_*` được nhúng vào bundle lúc build: đổi giá trị xong phải deploy lại.
+
+### Phiên bản Node
+
+`package.json` khai `"engines": { "node": "24.x" }`. Giá trị này override setting Node.js trên dashboard Vercel; nếu dashboard ghi phiên bản khác thì build log có warning, bình thường.
 
 ## Quy trình deploy
 
 ### Production
 
-1. Merge hoặc push vào `main` trên GitHub.
-2. Vercel nhận webhook, clone commit, chạy `npm install` (đọc `.npmrc`) và `npm run build`.
-3. Build xong, deployment được gán vào các domain production.
+1. Merge hoặc push vào `main`.
+2. Vercel nhận webhook, chạy `npm install` (đọc `.npmrc`) và `npm run build`.
+3. Build xong, deployment được gán vào domain production.
 
-Một lần build gọi Notion để lấy danh sách bài và nội dung block của từng bài. Notion API giới hạn khoảng 3 request/giây; với vài chục bài thì không thành vấn đề, nhưng số bài tăng nhiều sẽ làm build chậm hoặc dính rate limit.
+Một lần build gọi Notion để lấy danh sách bài và nội dung block của từng bài. Notion API giới hạn khoảng 3 request/giây; với vài chục bài thì không sao, nhưng số bài tăng nhiều sẽ làm build chậm hoặc dính rate limit.
 
 Nút **Redeploy** trên dashboard build lại **commit cũ** của deployment đó. Dùng nó khi chỉ đổi biến môi trường, không dùng để lấy code mới.
 
 ### Preview
 
-Vercel mặc định build preview cho mọi nhánh khác `main` và mọi PR (ví dụ nhánh `dev`). Preview dùng cùng `NOTION_API_SECRET`/`DATABASE_ID`, tức đọc cùng database nội dung với production.
+Vercel mặc định build preview cho mọi nhánh khác `main` và mọi PR. Preview dùng cùng biến môi trường nên đọc cùng database nội dung với production, trừ khi bạn đặt `DATABASE_ID` riêng cho môi trường Preview.
 
 ### Nội dung
 
@@ -103,46 +98,16 @@ Vercel dashboard → *Deployments* → chọn deployment `READY` trước đó �
 
 ## Debug production
 
-### Từ dashboard
-
-Vercel → project → *Deployments* → chọn deployment → *Build Logs* (lỗi build) hoặc *Runtime Logs* / *Logs* (lỗi khi ISR render, `console.log` trong `getStaticProps` và API route).
-
-### Từ terminal
-
-Tạo token cá nhân ở <https://vercel.com/account/tokens>, lưu vào biến môi trường user `VERCEL_TOKEN` (không commit, không dán vào log). Gọi API với header `Authorization: Bearer <token>`:
-
-| Endpoint | Trả về |
-|---|---|
-| `GET https://api.vercel.com/v9/projects/<projectId>` | Setting project, `nodeVersion`, repo, tên các env var |
-| `GET https://api.vercel.com/v6/deployments?projectId=<projectId>&limit=5` | Deployment gần nhất: `state` (`READY`, `ERROR`, `BUILDING`), commit sha |
-| `GET https://api.vercel.com/v3/deployments/<dpl_id>/events?builds=1&direction=forward&limit=500` | Toàn bộ build log |
-| `GET https://api.vercel.com/v9/projects/<projectId>/domains` | Domain và redirect |
-| `GET https://api.vercel.com/v6/domains/<domain>/config` | Trạng thái cấu hình DNS |
-
-Ví dụ PowerShell:
-
-```powershell
-$t = (Get-ItemProperty HKCU:\Environment -Name VERCEL_TOKEN).VERCEL_TOKEN
-$h = @{ Authorization = "Bearer $t" }
-$id = 'prj_Bg0ui1PPfA93OLGSHQHRkpJkvuIY'
-(Invoke-RestMethod -Headers $h "https://api.vercel.com/v6/deployments?projectId=$id&limit=5").deployments |
-  Select-Object uid, state, target, @{n='sha'; e={$_.meta.githubCommitSha}}
-```
-
-`setx` chỉ ghi registry; terminal đang mở không thấy biến mới, nên đọc thẳng từ `HKCU\Environment` như trên hoặc mở terminal mới.
-
-### Kiểm tra sau deploy
-
-- Mở `https://www.thocode.com/blog` và một bài bất kỳ.
-- `curl -sL https://www.thocode.com/<path>` rồi tìm chuỗi cần kiểm tra trong HTML.
-- Với thay đổi CSS: mở file trong `/_next/static/css/` để kiểm tra selector đã build đúng.
-- Header `x-vercel-cache` cho biết trang lấy từ cache (`HIT`, `STALE`) hay vừa render (`MISS`).
+- **Lỗi build:** Vercel → *Deployments* → chọn deployment → *Build Logs*.
+- **Lỗi khi chạy:** *Logs* / *Runtime Logs*. `console.log` trong `getStaticProps` và API route hiện ở đây, kể cả lỗi khi ISR render lại trang.
+- **Kiểm tra HTML:** `curl -sL https://<domain>/<path>` rồi tìm chuỗi cần kiểm tra. Với thay đổi CSS, mở file trong `/_next/static/css/` để xem selector đã build đúng chưa.
+- **Cache:** header `x-vercel-cache` cho biết trang lấy từ cache (`HIT`, `STALE`) hay vừa render (`MISS`).
 
 ### Lỗi build đã gặp
 
 | Thông báo | Nguyên nhân | Cách sửa |
 |---|---|---|
-| `Found invalid or discontinued Node.js Version` | Node 18 bị Vercel ngừng | `engines.node: "24.x"` (đã có) |
+| `Found invalid or discontinued Node.js Version` | Vercel ngừng Node 18 | `engines.node: "24.x"` (đã có) |
 | `npm ERR! ERESOLVE` liên quan `react-katex` | Peer deps React 16 | `.npmrc` `legacy-peer-deps=true` (đã có) |
 | `Module not found: Package path ./dist/cytoscape.umd.js is not exported` | mermaid 9.4 + cytoscape mới | Pin `mermaid` 9.1.7 (đã có) |
 | `NOTION_API_SECRET is missing from env` / `DATABASE_ID is missing` | Env var chưa đặt cho môi trường đang build | Thêm biến trên Vercel rồi Redeploy |

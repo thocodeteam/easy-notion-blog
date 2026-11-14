@@ -30,7 +30,13 @@ DATABASE_ID=<id database>
 # tuỳ chọn
 NEXT_PUBLIC_URL=http://localhost:3000
 NEXT_PUBLIC_GA_TRACKING_ID=
+# chỉ cần khi thử form /lien-he
+CONTACT_DATABASE_ID=
+TURNSTILE_SECRET_KEY=
+TURNSTILE_HOSTNAMES=localhost
 ```
+
+Muốn thử form ở local, `localhost` phải có trong danh sách domain của widget Turnstile. Không có ba biến cuối thì `/api/contact` trả 503, phần còn lại của site vẫn chạy.
 
 ## Script
 
@@ -77,9 +83,3 @@ Repo chưa commit lockfile (`package-lock.json` đã sinh ở local nhưng chưa
 | `"mermaid": "9.1.7"` (pin cứng) | mermaid 9.4.x kéo `cytoscape` mới, bản đó bỏ path `./dist/cytoscape.umd.js` khỏi `exports` → webpack báo `Module not found` |
 
 Commit `package-lock.json` sẽ giải quyết dứt điểm việc version trôi.
-
-## Môi trường Windows của máy hiện tại
-
-- `node` trong PATH có thể là bản bundled của Kiro (v22, không có npm). Node.js thật ở `C:\Program Files\nodejs` (v24 + npm 11); prepend thư mục này vào PATH trước khi chạy npm script.
-- Với shell `cmd`: `git` có thể không có trong PATH, gọi `C:\PROGRA~1\Git\cmd\git.exe`. Commit message nhiều dòng thì ghi ra file rồi `git commit -F <file>`.
-- Không dùng `timeout /t` trong script không có stdin; chờ bằng `ping -n <giây> 127.0.0.1 >nul`.

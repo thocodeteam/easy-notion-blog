@@ -51,8 +51,8 @@ Hệ quả cần biết:
 
 | URL | File | `revalidate` | Sinh sẵn lúc build | Ghi chú |
 |---|---|---|---|---|
-| `/` | `pages/index.tsx` | — (tĩnh) | có | Trang giới thiệu, nội dung hardcode |
-| `/about` | `pages/about.tsx` | — (tĩnh) | có | Nội dung hardcode |
+| `/` | `pages/index.tsx` | 60s | có | Trang chủ kiểu tạp chí: 3 bài nổi bật (bài có `Rank` trước, thiếu thì bù bằng bài mới nhất) và 7 bài mới nhất còn lại. Ảnh bìa đi qua `/api/post-image`. |
+| `/about` | `pages/about.tsx` | — (tĩnh) | có | Giới thiệu, gồm cả nội dung trang chủ cũ (hardcode) |
 | `/blog` | `pages/blog/index.tsx` | 60s | có | Trang 1 của danh sách |
 | `/blog/page/N` | `pages/blog/page/[page].tsx` | 60s | trang 2..N | N không hợp lệ hoặc rỗng → 404 |
 | `/blog/<slug>` | `pages/blog/[slug].tsx` | 60s | mọi bài | Nội dung bài + sidebar |
@@ -61,7 +61,23 @@ Hệ quả cần biết:
 | `/blog/before/<date>` | `pages/blog/before/[date].tsx` | 3600s | 1 path | URL cũ, giữ để không gãy link |
 | `/blog/tag/<tag>/before/<date>` | `pages/blog/tag/[tag]/before/[date].tsx` | 3600s | không | URL cũ |
 | `/api/blocks?slug=` | `pages/api/blocks.ts` | — | — | Trả JSON block của bài, dùng để làm mới URL ảnh |
-| `/api/url-metadata?url=` | `pages/api/url-metadata.ts` | — | — | Lấy title/description/image của URL ngoài cho bookmark |
+| `/api/url-metadata?url=` | `pages/api/url-metadata.ts` | — | — | Lấy title/description/image của URL ngoài cho bookmark. Chỉ nhận trang HTML công khai qua http(s), cổng mặc định; chặn địa chỉ nội bộ kể cả sau redirect; tối đa 3 redirect, 5 giây, 1 MB. CDN cache 1 ngày. |
+| `/api/post-image?slug=` | `pages/api/post-image.ts` | — | — | Redirect 302 tới URL ảnh `OGImage` còn hạn của bài. Chỉ redirect tới URL lấy từ Notion, không nhận URL từ người gọi. CDN cache 30 phút. |
+| `/lien-he` | `pages/lien-he.tsx` | — (tĩnh) | có | Form "Liên hệ / Góp bài", có Cloudflare Turnstile |
+| `/api/contact` | `pages/api/contact.ts` | — | — | Nhận form (POST), kiểm tra rồi ghi vào database Notion liên hệ |
+
+### Form liên hệ
+
+`/lien-he` gửi JSON tới `/api/contact`. Route này chạy lần lượt các bước sau, và chỉ ghi vào Notion khi mọi bước đều qua:
+
+1. Chỉ nhận `POST`, ngược lại trả 405. Body tối đa 32 KB.
+2. Thiếu `NOTION_API_SECRET`, `CONTACT_DATABASE_ID`, `TURNSTILE_SECRET_KEY` hoặc `TURNSTILE_HOSTNAMES` → 503. Log chỉ ghi tên biến, không ghi giá trị.
+3. Trường honeypot ẩn `website` có giá trị → 400.
+4. Kiểm tra trường: bắt buộc, độ dài tối đa (họ tên 100, email 254, tiêu đề 200, nội dung 10000, link bản nháp 500), định dạng email, `Loại` thuộc `Liên hệ`/`Góp bài`, link phải là http(s). Sai → 400 kèm thông báo tiếng Việt.
+5. Gọi Turnstile `siteverify`, timeout 10 giây. Phải có `success`, `action === "contact"` và `hostname` nằm trong `TURNSTILE_HOSTNAMES`. Sai hoặc lỗi mạng → 403.
+6. `createContactSubmission` trong `client.ts` tạo trang Notion. Lỗi Notion → 500.
+
+Hằng số dùng chung giữa trình duyệt và server (site key Turnstile, action, các giá trị `Loại`, độ dài tối đa) nằm ở `src/lib/contact.ts`. File này không import code server nên Notion client không lọt vào bundle trình duyệt. Site key Turnstile là giá trị công khai; secret key chỉ nằm trong env.
 
 Mọi route động dùng `fallback: 'blocking'`: path chưa sinh sẵn sẽ được render phía server ở request đầu tiên rồi cache lại.
 
@@ -82,7 +98,9 @@ URL được sinh tập trung trong `src/lib/blog-helpers.ts` (`getBlogLink`, `g
 2. Client kiểm tra `includeExpiredImage`: có block ảnh cấp cao nhất nào đã quá `ExpiryTime` không.
 3. Nếu có, `useSWR` gọi `/api/blocks?slug=<slug>` để lấy URL mới.
 
-Chỉ ảnh ở cấp cao nhất được kiểm tra (xem TODO trong code). `src/lib/notion/image-cache.ts` (tải ảnh về `public/notion_images`) có trong repo nhưng không được dùng ở đâu.
+Chỉ ảnh ở cấp cao nhất được kiểm tra (xem TODO trong code).
+
+Ảnh bìa (`OGImage`) trên trang chủ dùng cách khác: `<img src="/api/post-image?slug=...">`. Route này lấy URL ảnh mới từ Notion rồi redirect, kèm cache CDN 30 phút (`s-maxage=1800, stale-while-revalidate=600`), ngắn hơn tuổi thọ khoảng 1 giờ của URL ký. `src/lib/notion/image-cache.ts` (tải ảnh về `public/notion_images`) có trong repo nhưng không được dùng ở đâu.
 
 `next.config.js` cho phép `next/image` tải từ `s3.us-west-2.amazonaws.com` và `images.unsplash.com`.
 
@@ -94,7 +112,7 @@ Chỉ ảnh ở cấp cao nhất được kiểm tra (xem TODO trong code). `src
 | `pages/_document.tsx` | Khung HTML (`<Html lang="ja">`, xem known-issues). |
 | `components/document-head.tsx` | `<title>`, meta description, Open Graph, Twitter card, canonical. Khai báo `SITE_TITLE` và `SITE_DESCRIPTION` (nguồn duy nhất). Thẻ `og:url`, `canonical` và `og:image` mặc định chỉ xuất hiện khi có `NEXT_PUBLIC_URL`. |
 | `components/header.tsx` | Tên tạp chí và menu "Trang chủ / Tạp chí / Giới thiệu". |
-| `components/footer.tsx` | Footer kiểu tạp chí: tagline (cắt tiền tố tên khỏi `SITE_DESCRIPTION`), cột "Chuyên mục" (`categoryTags`), "Tạp chí", "Kết nối", dòng bản quyền. |
+| `components/footer.tsx` | Footer kiểu tạp chí: tagline (cắt tiền tố tên khỏi `SITE_DESCRIPTION`), cột "Chuyên mục" (`categoryTags`), "Tạp chí", "Kết nối" (link ngoài và "Góp bài / Liên hệ" → `/lien-he`), dòng bản quyền. |
 | `components/blog-parts.tsx` | Mảnh UI trang danh sách và sidebar: `PostTitle`, `PostTags`, `PostExcerpt`, `PostBody`, `Pagination`, `BlogPostLink`, `BlogTagLink`, `NoContents`... `PostDate` và `ReadMoreLink` đang bị ẩn bằng `display: none`. |
 | `components/notion-block.tsx` | Render mảng `Block` thành React. Gom list item liền nhau thành `<ul>`/`<ol>`. |
 | `components/notion-blocks/*` | Block nặng, tải bằng `next/dynamic`: code (Prism, Mermaid), embed (Twitter, Gist), bookmark, video (YouTube), công thức (KaTeX). |

@@ -72,3 +72,21 @@ Renderer ở `src/components/notion-block.tsx`. Block không có trong bảng s�
 | Bookmark, Link preview | Thẻ preview, metadata lấy qua `/api/url-metadata` |
 
 Không hỗ trợ: toggle, to-do, child page, child database, synced block, file/PDF, audio, embed từ dịch vụ khác. Callout dùng icon file (không phải emoji) cũng chưa xử lý.
+
+## Database liên hệ
+
+Form `/lien-he` ghi vào một database Notion **thứ hai**, tách khỏi database bài viết, id lưu ở `CONTACT_DATABASE_ID`. Database này phải được share cho cùng integration của `NOTION_API_SECRET`, với quyền chỉnh sửa (form cần tạo trang).
+
+Tên property phải khớp chính xác, kể cả dấu tiếng Việt:
+
+| Property | Kiểu Notion | Ghi chú |
+|---|---|---|
+| `Tiêu đề` | Title | Đổi tên cột "Name" mặc định thành tên này |
+| `Họ tên` | Text | |
+| `Email` | Email | |
+| `Loại` | Select | Option: `Liên hệ`, `Góp bài` |
+| `Link bản nháp` | URL | Để trống nếu người gửi không đưa link |
+| `Trạng thái` | Select | Option: `Mới`, `Đang xem`, `Đã xử lý`. Form luôn ghi `Mới`. |
+| `Thời gian gửi` (tuỳ chọn) | Created time | Code không ghi cột này; thêm vào nếu muốn thấy thời điểm gửi |
+
+Nội dung tin nhắn nằm trong thân trang, không phải property: tách đoạn theo dòng trống, mỗi rich text tối đa 2000 ký tự, tối đa 100 block (phần dư gộp vào block cuối).
