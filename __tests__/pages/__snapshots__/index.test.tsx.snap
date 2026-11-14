@@ -3,37 +3,137 @@
 exports[`RenderPage renders the page unchanged 1`] = `
 <div>
   <div
-    class="container"
+    class="home"
   >
-    <div>
-      <h2>
-        Hello, world!
-      </h2>
-      <p />
-      <h2>
-        Our Vision
-      </h2>
-      <p>
-        Bà con chúng ta, dù ở miền quê hay thành thị, ai cũng có thể làm được phần mềm, trước là để phục vụ nhu cầu cá nhân, sau là cho cộng đồng được thì tốt.
-      </p>
-      <h2>
-        Our Mission
-      </h2>
-      <p>
-        Mang lại nguồn kiến thức khoa học máy tính khô khan bằng nhiều hình thức gần gũi, thuần Việt nhất để phổ cập cho bà con.
-      </p>
-      <p />
-      <br />
-      <p>
-        Lời quê chắp nhặt dông dài
-        <br />
-        Mua vui cũng được một vài trống canh
-      </p>
-      <p />
-      <p>
-        Tạp chí Thợ Code - Code gì cũng được, miễn có lương thiện là được!
-      </p>
-    </div>
+    <section
+      class="featured"
+    >
+      <div
+        class="featuredSide"
+      >
+        <article
+          class="card"
+        >
+          <div
+            class="text"
+          >
+            <h3
+              class="title"
+            >
+              <a
+                href="/blog/supported-blocks"
+              >
+                Supported blocks
+              </a>
+            </h3>
+            <p
+              class="excerpt"
+            >
+              Supported blocks in easy-notion-blog
+            </p>
+            <div
+              class="meta"
+            >
+              3 thg 11, 2021
+               • 
+              <a
+                href="/blog/tag/Diary"
+              >
+                Diary
+              </a>
+            </div>
+          </div>
+        </article>
+        <article
+          class="card"
+        >
+          <div
+            class="text"
+          >
+            <h3
+              class="title"
+            >
+              <a
+                href="/blog/my-first-post"
+              >
+                My 1st post
+              </a>
+            </h3>
+            <p
+              class="excerpt"
+            >
+              This is an excerpt.
+            </p>
+            <div
+              class="meta"
+            >
+              1 thg 11, 2021
+               • 
+              <a
+                href="/blog/tag/Diary"
+              >
+                Diary
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+      <article
+        class="featuredMain"
+      >
+        <h3
+          class="title"
+        >
+          <a
+            href="/blog/ihatov"
+          >
+            あのイーハトーヴォのすきとおった風
+          </a>
+        </h3>
+        <p
+          class="excerpt"
+        >
+          あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。
+        </p>
+        <div
+          class="meta"
+        >
+          6 thg 11, 2021
+           • 
+          <a
+            href="/blog/tag/Diary"
+          >
+            Diary
+          </a>
+        </div>
+      </article>
+      <aside
+        class="featuredTags"
+      >
+        <h2>
+          Danh mục
+        </h2>
+        <ul>
+          <li>
+            <a
+              href="/blog/tag/Diary"
+            >
+              Diary
+            </a>
+          </li>
+        </ul>
+      </aside>
+    </section>
+    <section
+      class="latest"
+    >
+      <a
+        class="seeAll"
+        href="/blog"
+      >
+        Xem tất cả bài viết →
+      </a>
+    </section>
   </div>
 </div>
 `;
