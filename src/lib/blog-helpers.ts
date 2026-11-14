@@ -33,6 +33,21 @@ export const getDateStr = (date: string) => {
   return y + '-' + m + '-' + d
 }
 
+// '2026-09-28' -> '28 thg 9, 2026'. Đọc thẳng chuỗi YYYY-MM-DD, không qua
+// new Date, để ngày không bị lệch theo múi giờ của máy build.
+export const getDateStrVi = (date: string) => {
+  const matched = /^(\d{4})-(\d{2})-(\d{2})/.exec(date || '')
+  if (!matched) return ''
+
+  const [, y, m, d] = matched
+  return `${parseInt(d, 10)} thg ${parseInt(m, 10)}, ${y}`
+}
+
+// Ảnh bài đi qua API route để luôn lấy URL có chữ ký mới từ Notion.
+export const getPostImageLink = (slug: string) => {
+  return `/api/post-image?slug=${encodeURIComponent(slug)}`
+}
+
 export const normalizeSlug = (slug: string) => {
   const startingSlash = slug.startsWith('/')
   const endingSlash = slug.endsWith('/')
