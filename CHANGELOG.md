@@ -9,10 +9,7 @@ Số version của bản fork đánh lại từ `1.0.0`, không nối tiếp ver
 
 ## [Unreleased]
 
-### Changed
-
-- Số phiên bản ở footer chuyển xuống dòng credit, thành "Version X.Y.Z. Powered by
-  easy-notion-blog...", thay cho dòng "Phiên bản" dưới câu Truyện Kiều.
+## [1.2.0] - 2026-11-14
 
 ### Added
 
@@ -21,6 +18,11 @@ Số version của bản fork đánh lại từ `1.0.0`, không nối tiếp ver
   định từ lần đầu. Slug gõ tay luôn được giữ, slug cũ không đổi. Người fork cần bật quyền
   "Update content" cho integration Notion; thiếu quyền thì bài vẫn hiện nhưng slug chưa
   được lưu. Chi tiết ở `docs/notion-cms.md`.
+
+### Changed
+
+- Số phiên bản ở footer chuyển xuống dòng credit, thành "Version X.Y.Z. Powered by
+  easy-notion-blog...", thay cho dòng "Phiên bản" dưới câu Truyện Kiều.
 
 ## [1.1.0] - 2026-11-14
 
@@ -69,6 +71,7 @@ Bản release đầu tiên của bản fork, gom các thay đổi từ 07/2026 �
 
 - `/api/url-metadata` chỉ lấy thông tin từ trang HTML công khai qua http hoặc https.
 
-[Unreleased]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/thocodeteam/easy-notion-blog/releases/tag/v1.0.0
