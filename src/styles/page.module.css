@@ -21,3 +21,9 @@
   margin: 0.3rem auto;
   line-height: 2rem;
 }
+.container blockquote {
+  margin: 0 0 40px;
+  padding: 0 0 0 var(--gap);
+  border-left: 3px solid var(--fg);
+  font-style: italic;
+}
