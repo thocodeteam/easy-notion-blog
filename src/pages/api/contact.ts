@@ -30,7 +30,7 @@ const getConfig = () => {
   const values = {
     NOTION_API_SECRET: process.env.NOTION_API_SECRET,
     CONTACT_DATABASE_ID: process.env.CONTACT_DATABASE_ID,
-    TURNSTILE_SECRET: process.env.TURNSTILE_SECRET,
+    TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
     TURNSTILE_HOSTNAMES: process.env.TURNSTILE_HOSTNAMES,
   }
   // Chỉ ghi tên biến bị thiếu, không bao giờ ghi giá trị.
@@ -48,7 +48,7 @@ const getConfig = () => {
   return {
     missing,
     databaseId: values.CONTACT_DATABASE_ID,
-    turnstileSecret: values.TURNSTILE_SECRET,
+    turnstileSecret: values.TURNSTILE_SECRET_KEY,
     hostnames,
   }
 }

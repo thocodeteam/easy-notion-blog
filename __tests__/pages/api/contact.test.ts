@@ -44,7 +44,7 @@ describe('/api/contact', () => {
       ...originalEnv,
       NOTION_API_SECRET: 'notion-secret',
       CONTACT_DATABASE_ID: 'contact-db',
-      TURNSTILE_SECRET: 'turnstile-secret',
+      TURNSTILE_SECRET_KEY: 'turnstile-secret',
       TURNSTILE_HOSTNAMES: 'thocode.com, www.thocode.com',
     }
     fetchMock = jest.fn(() =>
@@ -77,12 +77,12 @@ describe('/api/contact', () => {
 
   test('returns 503 without touching Notion when config is missing', async () => {
     delete process.env.CONTACT_DATABASE_ID
-    delete process.env.TURNSTILE_SECRET
+    delete process.env.TURNSTILE_SECRET_KEY
     const res = await call(validBody)
     expect(res.statusCode).toEqual(503)
     expect(res._getJSONData().error).toBeTruthy()
     expect(console.log).toHaveBeenCalledWith(
-      expect.stringContaining('CONTACT_DATABASE_ID, TURNSTILE_SECRET')
+      expect.stringContaining('CONTACT_DATABASE_ID, TURNSTILE_SECRET_KEY')
     )
     expect(fetchMock).not.toHaveBeenCalled()
     expectNothingCalled()

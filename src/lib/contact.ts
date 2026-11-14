@@ -1,7 +1,7 @@
 // Dùng chung cho trang /lien-he (trình duyệt) và /api/contact (server).
 // Không import gì phía server vào đây để không kéo code Notion vào bundle client.
 
-// Site key là giá trị công khai; secret key chỉ nằm ở env TURNSTILE_SECRET.
+// Site key là giá trị công khai; secret key chỉ nằm ở env TURNSTILE_SECRET_KEY.
 export const TURNSTILE_SITE_KEY = '0x4AAAAAAGAii2IXomuDLWeb'
 
 // Phải trùng giữa data-action của widget và kiểm tra action ở siteverify.
