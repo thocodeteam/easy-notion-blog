@@ -14,7 +14,7 @@ interface FooterLink {
 // Điều hướng nội bộ trong site
 const siteLinks: FooterLink[] = [
   { label: 'Trang chủ', path: '/' },
-  { label: 'Lưu trữ', path: '/blog' },
+  { label: 'Tạp chí', path: '/blog' },
   { label: 'Giới thiệu', path: '/about' },
 ]
 
