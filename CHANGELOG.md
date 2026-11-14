@@ -8,6 +8,7 @@ Repo này fork từ [otoyo/easy-notion-blog](https://github.com/otoyo/easy-notio
 Số version của bản fork đánh lại từ `1.0.0`, không nối tiếp version của upstream.
 
 ## [Unreleased]
+## [1.2.2] - 2026-11-14
 ### Fixed
 - Ảnh xem trước khi chia sẻ link bài lên Facebook, Zalo hay Twitter không còn mất sau
   khoảng 1 giờ. Cần đặt `NEXT_PUBLIC_URL`; thiếu biến này thì ảnh vẫn hết hạn như trước.
@@ -79,7 +80,8 @@ Bản release đầu tiên của bản fork, gom các thay đổi từ 07/2026 �
 
 - `/api/url-metadata` chỉ lấy thông tin từ trang HTML công khai qua http hoặc https.
 
-[Unreleased]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.0.0...v1.1.0
