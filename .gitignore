@@ -34,3 +34,7 @@ yarn-error.log*
 tmp/
 public/notion_images/*
 !public/notion_images/.gitkeep
+
+# tai lieu noi bo (repo private rieng) va Kiro steering
+/private/
+/.kiro/
