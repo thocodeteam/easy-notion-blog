@@ -710,6 +710,67 @@ export async function getAllTags() {
     .sort()
 }
 
+export interface ContactSubmission {
+  name: string
+  email: string
+  kind: string
+  title: string
+  content: string
+  draftUrl: string
+}
+
+// Ghi một lượt gửi form "Liên hệ / Góp bài" vào database liên hệ riêng.
+// Nội dung đi vào thân trang (block) thay vì property để tránh giới hạn
+// 2000 ký tự của rich text; thời điểm gửi lấy từ created_time của Notion.
+export async function createContactSubmission(
+  databaseId: string,
+  submission: ContactSubmission
+) {
+  const properties = {
+    'Tiêu đề': { title: _toRichText(submission.title) },
+    'Họ tên': { rich_text: _toRichText(submission.name) },
+    Email: { email: submission.email },
+    Loại: { select: { name: submission.kind } },
+    'Trạng thái': { select: { name: 'Mới' } },
+  }
+  if (submission.draftUrl) {
+    properties['Link bản nháp'] = { url: submission.draftUrl }
+  }
+
+  await client.pages.create({
+    parent: { database_id: databaseId },
+    properties,
+    children: _toParagraphBlocks(submission.content),
+  })
+}
+
+// Notion giới hạn 2000 ký tự cho mỗi phần tử rich text.
+function _toRichText(text: string) {
+  const chunks = []
+  for (let i = 0; i < text.length; i += 2000) {
+    chunks.push({ type: 'text', text: { content: text.slice(i, i + 2000) } })
+  }
+  return chunks
+}
+
+// Mỗi đoạn (cách nhau bởi dòng trống) thành một paragraph block.
+// Một request tạo trang chỉ nhận tối đa 100 block con.
+function _toParagraphBlocks(content: string) {
+  const paragraphs = content
+    .split(/\n\s*\n/)
+    .map(paragraph => paragraph.trim())
+    .filter(paragraph => paragraph.length > 0)
+  if (paragraphs.length > 100) {
+    paragraphs.splice(99, paragraphs.length, paragraphs.slice(99).join('\n\n'))
+  }
+
+  return paragraphs.map(paragraph => ({
+    object: 'block',
+    type: 'paragraph',
+    paragraph: { rich_text: _toRichText(paragraph) },
+  }))
+}
+
 function _buildFilter(conditions = []) {
   if (process.env.NODE_ENV === 'development') {
     return { and: conditions }

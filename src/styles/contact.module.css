@@ -1,0 +1,143 @@
+.container {
+  width: 640px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.container h2 {
+  margin: 0 0 14px;
+  font-family: 'Spectral', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.intro {
+  margin: 0 0 var(--gap-double);
+  line-height: 1.8rem;
+  color: #555;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-quarter);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.label {
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.required {
+  color: #c00;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--accents-3);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: var(--gap-half);
+  border: 1px solid #ccc;
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: 1rem;
+}
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--accents-1);
+  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.15);
+}
+
+.textarea {
+  min-height: 220px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+}
+.choices label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-quarter);
+  cursor: pointer;
+}
+
+/* Bẫy bot: ẩn khỏi người dùng thật nhưng vẫn nằm trong form */
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.turnstile {
+  min-height: 65px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+}
+
+.submit {
+  padding: var(--gap-half) var(--gap-double);
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accents-1);
+  color: #fff;
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.submit:hover {
+  background: var(--accents-2);
+}
+.submit:disabled {
+  background: var(--accents-3);
+  cursor: not-allowed;
+}
+
+.error {
+  margin: 0;
+  padding: var(--gap-half) var(--gap);
+  border-left: 3px solid #c00;
+  border-radius: var(--radius);
+  background: #fff1f1;
+  color: #900;
+  line-height: 1.6;
+}
+
+.success {
+  padding: var(--gap) var(--gap);
+  border-left: 3px solid var(--geist-success);
+  border-radius: var(--radius);
+  background: #f3faea;
+  line-height: 1.8rem;
+}
+.success p {
+  margin: 0;
+}
