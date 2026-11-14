@@ -83,3 +83,7 @@ Repo chưa commit lockfile (`package-lock.json` đã sinh ở local nhưng chưa
 | `"mermaid": "9.1.7"` (pin cứng) | mermaid 9.4.x kéo `cytoscape` mới, bản đó bỏ path `./dist/cytoscape.umd.js` khỏi `exports` → webpack báo `Module not found` |
 
 Commit `package-lock.json` sẽ giải quyết dứt điểm việc version trôi.
+
+### Gói ESM-only trong API route
+
+`got` (dùng ở `/api/url-metadata`) chỉ có bản ESM. Nếu `import got from 'got'` ở đầu file, webpack của Next 12 biến cả route thành async module và **mọi request trả 500** ("resolver is not a function"), nhưng chỉ ở bản build production; `next dev` và Jest vẫn chạy bình thường. Vì vậy route nạp `got` bằng `await import('got')` bên trong handler. Áp dụng cách này cho mọi gói ESM-only mới thêm vào API route, và kiểm tra trên Vercel preview chứ đừng chỉ tin `next dev`.

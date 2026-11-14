@@ -8,6 +8,10 @@ Repo này fork từ [otoyo/easy-notion-blog](https://github.com/otoyo/easy-notio
 Số version của bản fork đánh lại từ `1.0.0`, không nối tiếp version của upstream.
 
 ## [Unreleased]
+### Fixed
+- Block Bookmark, Link preview và embed GitHub Gist trong bài giờ hiện thẻ xem trước (tiêu
+  đề, mô tả, ảnh). Trước đây thẻ không bao giờ hiện trên site thật vì API lấy thông tin link
+  luôn lỗi.
 
 ## [1.2.0] - 2026-11-14
 

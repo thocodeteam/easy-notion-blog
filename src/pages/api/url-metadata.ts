@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import got, { OptionsInit } from 'got'
+import type { Got, OptionsInit } from 'got'
 import createMetascraper from 'metascraper'
 import metascraperDescription from 'metascraper-description'
 import metascraperImage from 'metascraper-image'
@@ -21,6 +21,18 @@ const HTML_TYPES = ['text/html', 'application/xhtml+xml']
 // và request lặp lại (kể cả request lỗi) không chạy function.
 const CACHE_OK = 'public, s-maxage=86400, stale-while-revalidate=604800'
 const CACHE_ERROR = 'public, s-maxage=300'
+
+// got là gói ESM-only. Import tĩnh ở đầu file khiến webpack của Next 12 sinh
+// `import("got")` ở cấp module, biến cả route thành async module: require()
+// trả về Promise thay vì { default }, Next báo "resolver is not a function" và
+// mọi request đều 500. Nạp got bên trong handler để module vẫn đồng bộ.
+let gotPromise: Promise<Got> | undefined
+const loadGot = () => {
+  if (!gotPromise) {
+    gotPromise = import('got').then(m => m.default)
+  }
+  return gotPromise
+}
 
 const fail = (res: NextApiResponse, status: number) => {
   res.setHeader('Cache-Control', CACHE_ERROR)
@@ -47,6 +59,7 @@ const ApiUrlMetadata = async function(
   }
 
   try {
+    const got = await loadGot()
     const request = got(url.toString(), {
       dnsLookup: (safeLookup as unknown) as OptionsInit['dnsLookup'],
       timeout: { request: TIMEOUT_MS },
