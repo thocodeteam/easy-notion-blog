@@ -43,13 +43,6 @@
   color: #888;
 }
 
-.brandVersion {
-  margin: var(--gap-half) 0 0;
-  font-size: var(--font-small);
-  line-height: var(--line-small);
-  color: #888;
-}
-
 .columns {
   display: flex;
   flex-wrap: wrap;

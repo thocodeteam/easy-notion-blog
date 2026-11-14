@@ -9,6 +9,11 @@ Số version của bản fork đánh lại từ `1.0.0`, không nối tiếp ver
 
 ## [Unreleased]
 
+### Changed
+
+- Số phiên bản ở footer chuyển xuống dòng credit, thành "Version X.Y.Z. Powered by
+  easy-notion-blog...", thay cho dòng "Phiên bản" dưới câu Truyện Kiều.
+
 ### Added
 
 - Bài để trống ô `Slug` trong Notion giờ vẫn lên site: slug được sinh từ tiêu đề theo đúng

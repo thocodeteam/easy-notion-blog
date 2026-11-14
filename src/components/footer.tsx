@@ -58,7 +58,6 @@ const Footer = () => (
           <br />
           Mua vui cũng được một vài trống canh
         </p>
-        <p className={styles.brandVersion}>Phiên bản {version}</p>
       </div>
 
       <nav className={styles.columns} aria-label="Điều hướng chân trang">
@@ -115,7 +114,7 @@ const Footer = () => (
         <span>. Mọi bài viết thuộc về tác giả của bài viết đó.</span>
       </div>
       <div className={styles.credit}>
-        <span>Powered by </span>
+        <span>Version {version}. Powered by </span>
         <ExtLink href="https://github.com/otoyo/easy-notion-blog">
           easy-notion-blog
         </ExtLink>
