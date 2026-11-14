@@ -95,7 +95,9 @@ const Footer = () => (
               </li>
             ))}
             <li>
-              <a href="mailto:hello@thocode.com">Góp bài / Liên hệ</a>
+              <Link href="/lien-he" passHref>
+                <a>Góp bài / Liên hệ</a>
+              </Link>
             </li>
           </ul>
         </div>
