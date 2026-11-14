@@ -9,6 +9,8 @@ Số version của bản fork đánh lại từ `1.0.0`, không nối tiếp ver
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-14
+
 ### Added
 
 - Footer hiện số phiên bản đang chạy, ngay dưới câu Truyện Kiều.
@@ -54,5 +56,6 @@ Bản release đầu tiên của bản fork, gom các thay đổi từ 07/2026 �
 
 - `/api/url-metadata` chỉ lấy thông tin từ trang HTML công khai qua http hoặc https.
 
-[Unreleased]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/thocodeteam/easy-notion-blog/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/thocodeteam/easy-notion-blog/releases/tag/v1.0.0
