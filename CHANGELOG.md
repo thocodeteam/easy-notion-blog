@@ -8,6 +8,9 @@ Repo này fork từ [otoyo/easy-notion-blog](https://github.com/otoyo/easy-notio
 Số version của bản fork đánh lại từ `1.0.0`, không nối tiếp version của upstream.
 
 ## [Unreleased]
+### Fixed
+- Ảnh xem trước khi chia sẻ link bài lên Facebook, Zalo hay Twitter không còn mất sau
+  khoảng 1 giờ. Cần đặt `NEXT_PUBLIC_URL`; thiếu biến này thì ảnh vẫn hết hạn như trước.
 ## [1.2.1] - 2026-11-14
 ### Fixed
 - Block Bookmark, Link preview và embed GitHub Gist trong bài giờ hiện thẻ xem trước (tiêu

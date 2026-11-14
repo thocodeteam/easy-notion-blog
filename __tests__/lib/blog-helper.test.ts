@@ -1,9 +1,37 @@
 jest.mock('../../src/lib/notion/blog-index-cache')
 
 import {
+  getOgImageUrl,
   isYouTubeURL,
   parseYouTubeVideoId,
 } from '../../src/lib/blog-helpers'
+
+describe('getOgImageUrl', () => {
+  const notionUrl =
+    'https://prod-files-secure.s3.us-west-2.amazonaws.com/a/b/cover.jpg?X-Amz-Expires=3600'
+
+  it('points at /api/post-image on the site so the link never expires', () => {
+    const got = getOgImageUrl(
+      { Slug: 'bài viết/thử', OGImage: notionUrl },
+      'https://www.thocode.com'
+    )
+    expect(got).toBe(
+      'https://www.thocode.com/api/post-image?slug=b%C3%A0i%20vi%E1%BA%BFt%2Fth%E1%BB%AD'
+    )
+  })
+
+  it('falls back to the Notion URL when the site URL is not set', () => {
+    expect(getOgImageUrl({ Slug: 'a', OGImage: notionUrl }, undefined)).toBe(
+      notionUrl
+    )
+  })
+
+  it('returns an empty string when the post has no cover image', () => {
+    expect(
+      getOgImageUrl({ Slug: 'a', OGImage: null }, 'https://www.thocode.com')
+    ).toBe('')
+  })
+})
 
 describe('isYouTubeURL', () => {
   it('returns false with not YouTube URL', async () => {

@@ -100,7 +100,7 @@ URL được sinh tập trung trong `src/lib/blog-helpers.ts` (`getBlogLink`, `g
 
 Chỉ ảnh ở cấp cao nhất được kiểm tra (xem TODO trong code).
 
-Ảnh bìa (`OGImage`) trên trang chủ dùng cách khác: `<img src="/api/post-image?slug=...">`. Route này lấy URL ảnh mới từ Notion rồi redirect, kèm cache CDN 30 phút (`s-maxage=1800, stale-while-revalidate=600`), ngắn hơn tuổi thọ khoảng 1 giờ của URL ký. `src/lib/notion/image-cache.ts` (tải ảnh về `public/notion_images`) có trong repo nhưng không được dùng ở đâu.
+Ảnh bìa (`OGImage`) dùng cách khác: trang chủ dùng `<img src="/api/post-image?slug=...">`, và thẻ `og:image`/`twitter:image` của trang bài trỏ tới `<NEXT_PUBLIC_URL>/api/post-image?slug=...` (`getOgImageUrl` trong `blog-helpers.ts`), vì Facebook, Zalo, Twitter đọc lại ảnh sau khi URL ký đã hết hạn. Thiếu `NEXT_PUBLIC_URL` thì thẻ dùng thẳng URL Notion. Route này lấy URL ảnh mới từ Notion rồi redirect, kèm cache CDN 30 phút (`s-maxage=1800, stale-while-revalidate=600`), ngắn hơn tuổi thọ khoảng 1 giờ của URL ký. `src/lib/notion/image-cache.ts` (tải ảnh về `public/notion_images`) có trong repo nhưng không được dùng ở đâu.
 
 `next.config.js` cho phép `next/image` tải từ `s3.us-west-2.amazonaws.com` và `images.unsplash.com`.
 

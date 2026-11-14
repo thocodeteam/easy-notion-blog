@@ -48,6 +48,20 @@ export const getPostImageLink = (slug: string) => {
   return `/api/post-image?slug=${encodeURIComponent(slug)}`
 }
 
+// og:image/twitter:image phải là URL tuyệt đối và còn dùng được khi Facebook,
+// Zalo, Twitter đọc lại link về sau. URL ký của Notion hết hạn sau khoảng 1 giờ,
+// nên trỏ qua /api/post-image (luôn redirect tới URL mới). Không có siteUrl
+// (NEXT_PUBLIC_URL chưa đặt) thì không ghép được URL tuyệt đối, đành dùng URL
+// gốc của Notion như trước.
+export const getOgImageUrl = (
+  post: { Slug: string; OGImage: string | null },
+  siteUrl?: string
+) => {
+  if (!post.OGImage) return ''
+  if (!siteUrl) return post.OGImage
+  return new URL(getPostImageLink(post.Slug), siteUrl).toString()
+}
+
 export const normalizeSlug = (slug: string) => {
   const startingSlash = slug.startsWith('/')
   const endingSlash = slug.endsWith('/')

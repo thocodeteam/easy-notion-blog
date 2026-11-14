@@ -18,7 +18,7 @@ import {
 } from '../../components/blog-parts'
 import SocialButtons from '../../components/social-buttons'
 import styles from '../../styles/blog.module.css'
-import { getBlogLink } from '../../lib/blog-helpers'
+import { getBlogLink, getOgImageUrl } from '../../lib/blog-helpers'
 import {
   getPosts,
   getAllPosts,
@@ -126,7 +126,7 @@ const RenderPost = ({
       <DocumentHead
         title={post.Title}
         description={post.Excerpt}
-        urlOgImage={post.OGImage}
+        urlOgImage={getOgImageUrl(post, NEXT_PUBLIC_URL)}
       />
 
       <div className={styles.mainContent}>
